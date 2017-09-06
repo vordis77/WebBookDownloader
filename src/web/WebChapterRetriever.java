@@ -57,10 +57,27 @@ public class WebChapterRetriever {
     }
 
     private String getChapterText(String document) {
-        int size = 0, chapterTextBlockStartIndex, chapterTextBlockEndIndex = 0, newSize;
+        int size = 0, chapterTextBlockStartIndex, chapterTextBlockEndIndex = 0, divTagCount, index, newSize;
         int[] blockBounds = new int[2];
         // go over blocks with paragraphs, get one with the biggest size of text(parse it).
-        while ((chapterTextBlockStartIndex = document.indexOf(Settings.chapterParagraphContainer, chapterTextBlockEndIndex)) != -1 && (chapterTextBlockEndIndex = document.indexOf("<div", chapterTextBlockStartIndex)) != -1) { // search for paragraphs until there is none left, assume that block ends with the begining of new block, so we assume that block cannot be last in document.
+        while ((chapterTextBlockStartIndex = document.indexOf(Settings.chapterParagraphContainer, chapterTextBlockEndIndex)) != -1) { // search for paragraphs until there is none left, jump over sub-divs.
+            // set tag counter as unended
+            divTagCount = 1;
+            // jump to end of div if there are any sub-divs
+            index = chapterTextBlockStartIndex;
+            while (divTagCount > 0) { // on default we start with 1 tag count - we are in some div, now we wants to find its end.
+                index = document.indexOf("div", index); // get index of div tag, we can also find normal text , thats why else if
+                // check if tag is ending or begining
+                if (document.charAt(index - 1) == '<') { // begining tag
+                    divTagCount++;
+                } else if (document.charAt(index - 1) == '/') { // ending tag
+                    divTagCount--;
+                }
+                // pass tag length to index, so we will find next, not the same 
+                index += 4;
+            }
+            // after loop we should have index of block end
+            chapterTextBlockEndIndex = index;
             newSize = Jsoup.parse(document.substring(chapterTextBlockStartIndex, chapterTextBlockEndIndex)).text().length();
             if (newSize > size) {
                 size = newSize;
@@ -68,6 +85,7 @@ public class WebChapterRetriever {
                 blockBounds[1] = chapterTextBlockEndIndex;
             }
         }
+
         // after loop we should have indexes of chapter text container, now clean it(remove next chapter, previous chapter and trim).
         String chapterText = Jsoup.parse(document.substring(blockBounds[0], blockBounds[1])).text();
         chapterText = chapterText.replaceAll("Previous.Chapter", "");
@@ -76,6 +94,7 @@ public class WebChapterRetriever {
         return chapterText;
     }
 
+    // todo: change algorithm to be more reliable(use 2 addresses, compare them, difference is chapter name)
     private String getChapterTitle(String document) {
         // cut beginning of document - start with title tag
         document = document.substring(document.indexOf("<title>"));
@@ -134,10 +153,10 @@ public class WebChapterRetriever {
                 if (!link.contains("://")) {
                     // we have full address to previous chapter, but we need only part of it.
                     // assuming that last chapter and next chapter are in the same folder, we can just cut out last part of chapter and get last part of link
-                    int chapterIndex = chapterAbsoluteAddress.lastIndexOf('/', chapterAbsoluteAddress.length()-2); // -2 because we want to ommit last slash if it exists
-                    int linkIndex = link.lastIndexOf('/', link.length()-2); // same
-                    
-                    link = chapterAbsoluteAddress.substring(0, chapterIndex).concat(link.substring(linkIndex)); 
+                    int chapterIndex = chapterAbsoluteAddress.lastIndexOf('/', chapterAbsoluteAddress.length() - 2); // -2 because we want to ommit last slash if it exists
+                    int linkIndex = link.lastIndexOf('/', link.length() - 2); // same
+
+                    link = chapterAbsoluteAddress.substring(0, chapterIndex).concat(link.substring(linkIndex));
                 }
                 return link;
             } else { // if somehow indexes broke, it shouldnt occur.
