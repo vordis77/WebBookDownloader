@@ -37,7 +37,7 @@ import resources.Settings;
 public class WebChapterRetriever {
 
     private Integer crawlingCounter = null;
-    private String nextLinkName = null;
+    private String nextLinkName = null, lastChapterTitle;
 
     /**
      * Retrieve chapter from website.
@@ -65,8 +65,13 @@ public class WebChapterRetriever {
             divTagCount = 1;
             // jump to end of div if there are any sub-divs
             index = chapterTextBlockStartIndex;
-            while (divTagCount > 0) { // on default we start with 1 tag count - we are in some div, now we wants to find its end.
-                index = document.indexOf("div", index); // get index of div tag, we can also find normal text , thats why else if
+            while (divTagCount > 0) { // on default we start with 1 tag count - we are in some div, now we want to find its end.
+                index = document.indexOf("div", index); // get index of div tag, we can also find normal text , thats why else if                
+                // validate index, we cant assume that all websites are properly written(or we can find ourselves in script, where we don't know if there are any containers). Error coming from it is not critical
+                if (index == -1) {
+                    index = chapterTextBlockStartIndex + 2; // create dummy range - 0-1 character, just to pass this useless piece of text
+                    break;
+                }
                 // check if tag is ending or begining
                 if (document.charAt(index - 1) == '<') { // begining tag
                     divTagCount++;
@@ -75,6 +80,10 @@ public class WebChapterRetriever {
                 }
                 // pass tag length to index, so we will find next, not the same 
                 index += 4;
+            }
+            // if chapter paragraph contaiener is <br then we need to use parent index as start
+            if (Settings.chapterParagraphContainer.equals("<br")) {
+                chapterTextBlockStartIndex = document.lastIndexOf("<div", chapterTextBlockStartIndex);
             }
             // after loop we should have index of block end
             chapterTextBlockEndIndex = index;
@@ -94,19 +103,31 @@ public class WebChapterRetriever {
         return chapterText;
     }
 
-    // todo: change algorithm to be more reliable(use 2 addresses, compare them, difference is chapter name)
     private String getChapterTitle(String document) {
         // cut beginning of document - start with title tag
         document = document.substring(document.indexOf("<title>"));
         String title = document.substring(7, document.indexOf("</title>"));
         title = Jsoup.parse(title).text(); // parse escape chars
-        // we have title of the website, now cut out website name, leave chapter title
-        int index = title.lastIndexOf("–"); // find last long minus
-        if (index == -1) { // if there is no such character find normal minus
-            index = title.lastIndexOf("-");
+        // fix chapter name from second onwards
+        if (lastChapterTitle == null) { // first chapter - full title, store it as last chapter title
+            return lastChapterTitle = title; // if index is still not found just pass full title, index minimally should be more than 2 - 1 for space, 1 for char 
+        } else { // second chapter+ - trim to only chapter text;
+            int index;
+            // todo: check if most of the sites have useless additions at the end of the title 
+            /*index = 0;
+            while (title.charAt(index) == lastChapterTitle.charAt(index)) {
+                index++;
+            }
+            title = title.substring(index);*/
+            // find end index
+            index = 1;
+            while (title.charAt(title.length() - index) == lastChapterTitle.charAt(lastChapterTitle.length() - index)) {
+                index++;
+            }
+            index = title.length() - index + 1; // remember that right paranthesis is exclusive, so we need to add 1
+            return title.substring(0, index);
         }
-        index--; // take into account space 
-        return (index > 2) ? title.substring(0, index) : title; // if index is still not found just pass full title, index minimally should be more than 2 - 1 for space, 1 for char
+
     }
 
     public void initializeCrawling(Integer numberOfChapters, String nextLinkName) {
@@ -152,11 +173,20 @@ public class WebChapterRetriever {
                 // check if link is absolute if not fix it.
                 if (!link.contains("://")) {
                     // we have full address to previous chapter, but we need only part of it.
-                    // assuming that last chapter and next chapter are in the same folder, we can just cut out last part of chapter and get last part of link
-                    int chapterIndex = chapterAbsoluteAddress.lastIndexOf('/', chapterAbsoluteAddress.length() - 2); // -2 because we want to ommit last slash if it exists
-                    int linkIndex = link.lastIndexOf('/', link.length() - 2); // same
+                    // new way - find position of local link first address part in absolute, if it doesnt exist concate whole links.
+                    int localPartEnd = link.indexOf('/', 1); // get first slash - delimiting first folder in path, if there isn't one just concate with absolute - last path
+                    int absoluteEnd;
+                    if (localPartEnd > -1) {
+                        absoluteEnd = chapterAbsoluteAddress.indexOf(link.substring(0, localPartEnd));
+                        if (absoluteEnd < 0) { // if index was not found just set index to end of string
+                            absoluteEnd = chapterAbsoluteAddress.length() - 1;
+                        }
+                    } else { // local is minimised - concate with absolute - last part
+                        absoluteEnd = chapterAbsoluteAddress.lastIndexOf('/') + 1; // slash inclusive
+                    }
 
-                    link = chapterAbsoluteAddress.substring(0, chapterIndex).concat(link.substring(linkIndex));
+                    link = chapterAbsoluteAddress.substring(0, absoluteEnd).concat(link);
+
                 }
                 return link;
             } else { // if somehow indexes broke, it shouldnt occur.
