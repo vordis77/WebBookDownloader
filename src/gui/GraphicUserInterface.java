@@ -105,6 +105,7 @@ public class GraphicUserInterface {
             final JComboBox<String> htmlElementBox = new JComboBox<>(new String[]{
                 "<p",
                 "<a",
+                "<br",
                 "<span",
             });
             // encoding label + comboBox
