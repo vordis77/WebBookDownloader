@@ -69,7 +69,7 @@ public class WebChapterRetriever {
                 index = document.indexOf("div", index); // get index of div tag, we can also find normal text , thats why else if                
                 // validate index, we cant assume that all websites are properly written(or we can find ourselves in script, where we don't know if there are any containers). Error coming from it is not critical
                 if (index == -1) {
-                    index = chapterTextBlockStartIndex+2; // create dummy range - 0-1 character, just to pass this useless piece of text
+                    index = chapterTextBlockStartIndex + 2; // create dummy range - 0-1 character, just to pass this useless piece of text
                     break;
                 }
                 // check if tag is ending or begining
@@ -77,9 +77,13 @@ public class WebChapterRetriever {
                     divTagCount++;
                 } else if (document.charAt(index - 1) == '/') { // ending tag
                     divTagCount--;
-                }                
+                }
                 // pass tag length to index, so we will find next, not the same 
                 index += 4;
+            }
+            // if chapter paragraph contaiener is <br then we need to use parent index as start
+            if (Settings.chapterParagraphContainer.equals("<br")) {
+                chapterTextBlockStartIndex = document.lastIndexOf("<div", chapterTextBlockStartIndex);
             }
             // after loop we should have index of block end
             chapterTextBlockEndIndex = index;
@@ -108,7 +112,7 @@ public class WebChapterRetriever {
         if (lastChapterTitle == null) { // first chapter - full title, store it as last chapter title
             return lastChapterTitle = title; // if index is still not found just pass full title, index minimally should be more than 2 - 1 for space, 1 for char 
         } else { // second chapter+ - trim to only chapter text;
-            int index; 
+            int index;
             // todo: check if most of the sites have useless additions at the end of the title 
             /*index = 0;
             while (title.charAt(index) == lastChapterTitle.charAt(index)) {
@@ -121,9 +125,9 @@ public class WebChapterRetriever {
                 index++;
             }
             index = title.length() - index + 1; // remember that right paranthesis is exclusive, so we need to add 1
-            return title.substring(0, index);            
+            return title.substring(0, index);
         }
-        
+
     }
 
     public void initializeCrawling(Integer numberOfChapters, String nextLinkName) {
@@ -179,7 +183,7 @@ public class WebChapterRetriever {
                         }
                     } else { // local is minimised - concate with absolute - last part
                         absoluteEnd = chapterAbsoluteAddress.lastIndexOf('/') + 1; // slash inclusive
-                     }
+                    }
 
                     link = chapterAbsoluteAddress.substring(0, absoluteEnd).concat(link);
 
