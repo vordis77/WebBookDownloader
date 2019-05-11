@@ -59,7 +59,7 @@ import web.WebLinksRetriever;
  *
  * @author marcin
  */
-public class Test {
+public class Test { // TODO: transform into real true tests
 
     public Test() {
     }

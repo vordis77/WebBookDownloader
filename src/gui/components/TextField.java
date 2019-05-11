@@ -33,12 +33,12 @@ import javax.swing.JTextField;
  *
  * @author marcin
  */
-public class TextField extends JTextField{
+public class TextField extends JTextField {
 
     public TextField() {
         super();
     }
-    
+
     public TextField(String text) {
         super(text);
     }
@@ -51,18 +51,7 @@ public class TextField extends JTextField{
         super.setMaximumSize(new Dimension(700, 30));
         super.setPreferredSize(new Dimension(700, 30));
         super.setCaretColor(Color.red);
-        super.doLayout(); 
+        super.doLayout();
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

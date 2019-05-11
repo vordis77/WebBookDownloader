@@ -30,6 +30,7 @@ import javax.swing.JButton;
 
 /**
  * JButton with custom font color.
+ *
  * @author marcin
  */
 public class Button extends JButton {
@@ -37,18 +38,13 @@ public class Button extends JButton {
     public Button(String contents) {
         super(contents);
     }
-    
+
     @Override
     public void doLayout() {
         // before layout set max and prefered size
         super.setBackground(Color.black);
         super.setForeground(Color.white); // font 
-        super.doLayout(); 
+        super.doLayout();
     }
 
-    
-    
-    
-    
-    
 }
