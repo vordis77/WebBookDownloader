@@ -45,10 +45,4 @@ public class Label extends JLabel {
         super.doLayout(); 
     }
     
-    
-    
-    
-    
-      
-    
 }
