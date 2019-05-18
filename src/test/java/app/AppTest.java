@@ -1,4 +1,4 @@
-package vordis.webbookdownloader;
+package app;
 
 import org.junit.Test;
 

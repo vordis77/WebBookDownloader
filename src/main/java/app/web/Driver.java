@@ -23,47 +23,46 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package tools;
+package app.web;
+
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
+import resources.Settings;
 
 /**
- * This class represents chapter entity, which comes in 2 dimensions: chapter address, chapter title.
+ * This class handles interactions between web and program.
  * @author marcin
  */
-public class WebChapter {
-    final String address, title;
-
-    /**
-     * Create instance of this class.
-     * @param address http address of the chapter.
-     * @param title string title of the chapter.
-    */
-    public WebChapter(String address, String title) {
-        this.address = address;
-        this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return title + " - " + address;
-    }
+class Driver {
     
     /**
-     * Get chapter website address.
-     * @return chapters website address.
+     * This method reads html site and returns it as html source.
+     *
+     * @param stringURL link to html site
+     * @return html site code in String format
+     * @throws java.io.IOException if problem occured, when reading from site or address is invalid - check if its instance of MalformedURLException
      */
-    public String getAddress() {
-        return address;
+    static String readSite(final String stringURL) throws IOException  {
+        URL url = new URL(stringURL);
+        URLConnection urlc = url.openConnection();
+        urlc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        urlc.connect();
+        final StringBuilder siteCode;
+        try (Scanner scanner = new Scanner(urlc.getInputStream(), Settings.encoding)) {
+            siteCode = new StringBuilder();
+            while (scanner.hasNext()) {
+                siteCode.append(scanner.next()).append(" ");
+            }
+        } catch (Exception e) {
+            // if any misshap occurs when reading site, just return null.
+            return null;
+        }
+        
+        
+        return siteCode.toString();
     }
-    
-    /**
-     * Get chapter title. It can be inaccurate, especially if user passed chapters from range generator. Prefer WebChapterRetriever title over it.
-     * @return chapter title.
-     */
-    public String getTitle() {
-        return title;
-    }  
-    
-    
     
     
 }

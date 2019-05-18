@@ -23,14 +23,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui.components;
+package app.gui.components;
 
 import java.awt.Color;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import webbookdownloader.WebBookDownloader;
+import app.WebBookDownloader;
 
 /**
  * Panel based on box layout.

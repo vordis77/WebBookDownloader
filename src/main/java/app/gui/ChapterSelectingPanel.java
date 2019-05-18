@@ -23,12 +23,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui;
+package app.gui;
 
-import gui.components.Button;
-import gui.components.Label;
-import gui.components.Panel;
-import gui.components.TextField;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -46,12 +42,17 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingWorker;
+
+import app.gui.components.Button;
+import app.gui.components.Label;
+import app.gui.components.Panel;
+import app.gui.components.TextField;
 import resources.Dimensions;
 import resources.Settings;
 import resources.strings.Strings;
-import tools.WebChapter;
-import web.WebLinksRetriever;
-import webbookdownloader.WebBookDownloader;
+import app.web.Chapter;
+import app.web.LinksRetriever;
+import app.WebBookDownloader;
 
 /**
  * This panel allows user to choose range of chapters to create book.
@@ -60,11 +61,11 @@ import webbookdownloader.WebBookDownloader;
  */
 public class ChapterSelectingPanel extends Panel {
 
-    private final WebLinksRetriever wlr;
+    private final LinksRetriever wlr;
     private final Strings strings;
 
     public ChapterSelectingPanel() {
-        this.wlr = new WebLinksRetriever();
+        this.wlr = new LinksRetriever();
         strings = Settings.programStrings;
     }
 
@@ -128,10 +129,10 @@ public class ChapterSelectingPanel extends Panel {
                 dialog.pack();
                 dialog.setVisible(true);
 
-                new SwingWorker<ArrayList<WebChapter>, Object>() {
+                new SwingWorker<ArrayList<Chapter>, Object>() {
 
                     @Override
-                    protected ArrayList<WebChapter> doInBackground() throws Exception {
+                    protected ArrayList<Chapter> doInBackground() throws Exception {
                         switch (tabbedPane.getSelectedIndex()) {
                             case 0: {// table of contents
                                 try {
@@ -172,20 +173,20 @@ public class ChapterSelectingPanel extends Panel {
         add(createHorizontallyCenteredComponent(confirmButton));
     }
 
-    private void confirmChaptersAndGoToCreatingBookPanel(ArrayList<WebChapter> chapters) {
+    private void confirmChaptersAndGoToCreatingBookPanel(ArrayList<Chapter> chapters) {
         // check if chapters are not empty and are not null -- empty if not found links on site, null if any error occured while loading links
         if (chapters == null || chapters.isEmpty()) {
             return; // end prematurely
         }
         // components
-        final Vector<WebChapter> listContent = new Vector<>(chapters); // data
+        final Vector<Chapter> listContent = new Vector<>(chapters); // data
         final JList chapterList = new JList(listContent);
         final JScrollPane listContainer = new JScrollPane(chapterList);
         listContainer.setPreferredSize(new Dimension(Dimensions.FRAME_WIDTH, Dimensions.FRAME_HEIGHT));
         // show list in dialog
         if (JOptionPane.showConfirmDialog(WebBookDownloader.gui.getProgramFrame(), listContainer, strings.dialog_chapter_selection_title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             // user confirmed - get selected chapters and open chapter crawlingPanel with them
-            final ArrayList<WebChapter> selectedChapters = new ArrayList<>(chapterList.getSelectedValuesList());
+            final ArrayList<Chapter> selectedChapters = new ArrayList<>(chapterList.getSelectedValuesList());
             // check if user selected chapters
             if (selectedChapters.isEmpty()) {
                 WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle, strings.dialog_no_chapter_selected_message);
@@ -198,7 +199,7 @@ public class ChapterSelectingPanel extends Panel {
         }
     }
 
-    private void askForFileNameAndProceedToBookCreatingPane(ArrayList<WebChapter> selectedChapters, String[] linkNames) {
+    private void askForFileNameAndProceedToBookCreatingPane(ArrayList<Chapter> selectedChapters, String[] linkNames) {
         // ask for fileName and Path with extension depending on fileType
         final String extension;
         switch (Settings.fileType) {

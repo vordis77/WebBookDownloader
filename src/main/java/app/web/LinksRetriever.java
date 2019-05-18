@@ -23,20 +23,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package web;
+package app.web;
 
-import tools.WebChapter;
+import app.web.Chapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.jsoup.Jsoup;
 
 /**
- * This class analyzes and converts results from WebDriver(pure html) into user
+ * This class analyzes and converts results from Driver(pure html) into user
  * friendly(pure string) results.
  *
  * @author marcin
  */
-public class WebLinksRetriever {
+public class LinksRetriever {
 
     private final String encoding = "UTF-8";
     private String bookTitle = "";
@@ -50,10 +50,10 @@ public class WebLinksRetriever {
      * @throws java.io.IOException if problem occured, when reading from site or
      * address is invalid - check if its instance of MalformedURLException.
      */
-    public ArrayList<WebChapter> getChaptersFromTOC(String tocAddress) throws IOException {
-        final ArrayList<WebChapter> chapterList = new ArrayList<>();
+    public ArrayList<Chapter> getChaptersFromTOC(String tocAddress) throws IOException {
+        final ArrayList<Chapter> chapterList = new ArrayList<>();
         // get toc code
-        String siteCode = WebDriver.readSite(tocAddress);
+        String siteCode = Driver.readSite(tocAddress);
         // get bookTitle while we are at scanning index website
         bookTitle = retrieveBookTitle(siteCode);        
         // scan over siteCode and get links from it
@@ -84,7 +84,7 @@ public class WebLinksRetriever {
                 // add chapter if description is not empty, if description is empty we dont want this link probably. 
                 // parse chapter title for any html codes
                 chapterTitle = Jsoup.parse(chapterTitle).text();
-                chapterList.add(new WebChapter(chapterLink, chapterTitle));
+                chapterList.add(new Chapter(chapterLink, chapterTitle));
             }
             // caret is on end of html block, should be ok for scanning for next link element.
 
@@ -122,8 +122,8 @@ public class WebLinksRetriever {
      * @param endAddress address of last chapter.
      * @return list of chapters.
      */
-    public ArrayList<WebChapter> getChaptersFromRange(String startAddress, String endAddress) {
-        final ArrayList<WebChapter> chapterList = new ArrayList<>();
+    public ArrayList<Chapter> getChaptersFromRange(String startAddress, String endAddress) {
+        final ArrayList<Chapter> chapterList = new ArrayList<>();
         // find numbers in both adresses, then increment last number from first until it gets the same value as number from last.
         String tempString = startAddress;
         tempString = tempString.replaceAll("[^0-9]+", " ");
@@ -140,7 +140,7 @@ public class WebLinksRetriever {
             for (int j = 0; j < tempString.length() - Integer.toString(i).length(); j++) { // new number is lower than basic, it means basic number has leading zeros, so we just will add preceding 0 for every length number that number lacks, do not use numberString we need constant in condition
                 numberString = "0" + numberString;
             }
-            chapterList.add(new WebChapter(startAddress.substring(0, indexOfNumber) + numberString + startAddress.substring(indexOfNumber + tempString.length()), "Chapter " + i));
+            chapterList.add(new Chapter(startAddress.substring(0, indexOfNumber) + numberString + startAddress.substring(indexOfNumber + tempString.length()), "Chapter " + i));
         }        
         return chapterList;
     }

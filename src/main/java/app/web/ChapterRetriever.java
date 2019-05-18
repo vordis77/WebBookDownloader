@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package web;
+package app.web;
 
 import java.io.IOException;
 import org.jsoup.Jsoup;
@@ -34,7 +34,7 @@ import resources.Settings;
  *
  * @author marcin
  */
-public class WebChapterRetriever {
+public class ChapterRetriever {
 
     private Integer crawlingCounter = null;
     private String nextLinkName = null, lastChapterTitle;
@@ -48,7 +48,7 @@ public class WebChapterRetriever {
      */
     public String[] retrieveChapter(String address) throws IOException {
         // get html of the chapter site
-        final String html = WebDriver.readSite(address);
+        final String html = Driver.readSite(address);
         // return chapter in form of table: 0 - title, 1 - text
         return new String[]{
             getChapterTitle(html),
@@ -147,7 +147,7 @@ public class WebChapterRetriever {
      */
     public String[] retrieveChapterCrawling(String address) throws IOException {
         // get html of the chapter site
-        final String html = WebDriver.readSite(address);
+        final String html = Driver.readSite(address);
         // return chapter in form of table: 0 - title, 1 - text, 2 - next chapter
 
         return new String[]{

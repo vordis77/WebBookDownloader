@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui;
+package app.gui;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -44,7 +44,7 @@ import javax.swing.JOptionPane;
 import resources.Dimensions;
 import resources.Settings;
 import resources.strings.Strings;
-import webbookdownloader.WebBookDownloader;
+import app.WebBookDownloader;
 
 /**
  * This class handles basic user- interface interactions, it also allows to
@@ -52,7 +52,7 @@ import webbookdownloader.WebBookDownloader;
  *
  * @author marcin
  */
-public class GraphicUserInterface {
+public class Interface {
 
     private final JFrame programFrame;
     private final Strings strings = Settings.programStrings;
@@ -60,7 +60,7 @@ public class GraphicUserInterface {
     /**
      * Creates instance of graphic user interface, creates frame.
      */
-    public GraphicUserInterface() {
+    public Interface() {
         this.programFrame = new JFrame(strings.programTitle);
     }
 

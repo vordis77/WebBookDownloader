@@ -23,16 +23,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package webbookdownloader;
+package app;
 
-import gui.GraphicUserInterface;
-import gui.ChapterSelectingPanel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Scanner;
+
+import app.gui.ChapterSelectingPanel;
+import app.gui.Interface;
 import resources.Settings;
 import static resources.Settings.LANGUAGE_ENGLISH;
 import static resources.Settings.LANGUAGE_POLISH;
@@ -51,7 +52,7 @@ public class WebBookDownloader {
     /**
      * Use this field to handle basic interaction between user and interface.
      */
-    public static GraphicUserInterface gui;
+    public static Interface gui;
 
     /**
      * Main method of the program
@@ -78,7 +79,7 @@ public class WebBookDownloader {
                 break;
         }
         // initialize gui tool
-        gui = new GraphicUserInterface();
+        gui = new Interface();
         // show frame
         gui.initializeAndShowFrame();
         // start interface - show first panel: range choosing panel

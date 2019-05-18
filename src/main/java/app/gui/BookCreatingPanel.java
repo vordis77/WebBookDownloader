@@ -23,11 +23,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui;
+package app.gui;
 
-import gui.components.Button;
-import gui.components.Label;
-import gui.components.Panel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -47,10 +44,13 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import resources.Settings;
 import resources.strings.Strings;
-import tools.FileSaver;
-import tools.WebChapter;
-import web.WebChapterRetriever;
-import webbookdownloader.WebBookDownloader;
+import app.file.FileSaver;
+import app.gui.components.Button;
+import app.gui.components.Label;
+import app.gui.components.Panel;
+import app.web.Chapter;
+import app.web.ChapterRetriever;
+import app.WebBookDownloader;
 
 /**
  * This class is responsible for panel in which user can see progress of
@@ -61,7 +61,8 @@ import webbookdownloader.WebBookDownloader;
  */
 public class BookCreatingPanel extends Panel {
 
-    private final ArrayList<WebChapter> chapters;
+    private static final long serialVersionUID = -4681243607663660435L;
+    private final ArrayList<Chapter> chapters;
     private final String fileName;
     private final Strings strings;
     private final ChapterSelectingPanel parentPanel;
@@ -80,7 +81,7 @@ public class BookCreatingPanel extends Panel {
      * - number of chapters 2 - first chapter address) or null if we are using
      * selected chapters.
      */
-    public BookCreatingPanel(ArrayList<WebChapter> chapters, String fileName, ChapterSelectingPanel parentPanel, String[] crawlingValues) {
+    public BookCreatingPanel(ArrayList<Chapter> chapters, String fileName, ChapterSelectingPanel parentPanel, String[] crawlingValues) {
         this.chapters = chapters;
         this.fileName = fileName;
         this.strings = Settings.programStrings;
@@ -146,12 +147,12 @@ public class BookCreatingPanel extends Panel {
             protected Object doInBackground() throws Exception {
                 // go over all chapters
                 String[] chapterValues;
-                final WebChapterRetriever wcr = new WebChapterRetriever();
+                final ChapterRetriever wcr = new ChapterRetriever();
                 int successCounter = 0, failureCounter = 0;
                 String resultDescription;
                 // here we have decicions: for each selected chapter or crawl through chapters until there is no next chapter or maximum amount of chapters received.
                 if (chapters != null) { // toc or range
-                    for (WebChapter wc : chapters) {
+                    for (Chapter wc : chapters) {
                         try {
                             // get chapterText and title
                             chapterValues = wcr.retrieveChapter(wc.getAddress());

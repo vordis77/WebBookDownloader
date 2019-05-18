@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package tools;
+package app.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +50,7 @@ import resources.Settings;
  *
  * @author marcin
  */
-public class FileSaver {
+public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven libraries
 
     private final String filePath, encoding;
     private PrintWriter pw;
