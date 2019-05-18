@@ -72,16 +72,17 @@ public class BookCreatingPanel extends Panel {
     /**
      * Create new instance of book creating panel.
      *
-     * @param chapters list of chapters from which book will be created, pass
-     * null if you want to crawl through next links.
-     * @param fileName path to file in which book will be saved.
-     * @param parentPanel parent instance, thanks to this reference we can
-     * recreate panel with values in fields.
-     * @param crawlingValues (string array where 0 - next chapter link name 1
-     * - number of chapters 2 - first chapter address) or null if we are using
-     * selected chapters.
+     * @param chapters       list of chapters from which book will be created, pass
+     *                       null if you want to crawl through next links.
+     * @param fileName       path to file in which book will be saved.
+     * @param parentPanel    parent instance, thanks to this reference we can
+     *                       recreate panel with values in fields.
+     * @param crawlingValues (string array where 0 - next chapter link name 1 -
+     *                       number of chapters 2 - first chapter address) or null
+     *                       if we are using selected chapters.
      */
-    public BookCreatingPanel(ArrayList<Chapter> chapters, String fileName, ChapterSelectingPanel parentPanel, String[] crawlingValues) {
+    public BookCreatingPanel(ArrayList<Chapter> chapters, String fileName, ChapterSelectingPanel parentPanel,
+            String[] crawlingValues) {
         this.chapters = chapters;
         this.fileName = fileName;
         this.strings = Settings.programStrings;
@@ -95,15 +96,20 @@ public class BookCreatingPanel extends Panel {
         final FileSaver fs = new FileSaver(fileName, Settings.encoding);
         try {
             fs.createFile();
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) { // it should not occur with fileDialog but who knows.
-            // inform user, throw exception so this panel will not be shown and rest operations will not be done.
-            WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle, strings.dialog_invalid_filename_message);
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) { // it should not occur with fileDialog but
+                                                                            // who knows.
+            // inform user, throw exception so this panel will not be shown and rest
+            // operations will not be done.
+            WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
+                    strings.dialog_invalid_filename_message);
             throw ex;
         }
         // number of chapters with taking into account crawlingValues
-        int numberOfChapters = (chapters != null) ? chapters.size() : (!crawlingValues[1].isEmpty()) ? new Integer(crawlingValues[1]) : 0; // if empty than user wants all chapters in crawling
+        int numberOfChapters = (chapters != null) ? chapters.size()
+                : (!crawlingValues[1].isEmpty()) ? new Integer(crawlingValues[1]) : 0; // if empty than user wants all
+                                                                                       // chapters in crawling
 
-        // components         
+        // components
         final Label chaptersSuccessTextLabel = new Label(strings.book_creating_chapters_success),
                 chaptersSuccessValueLabel = new Label("0"),
                 chaptersFailureTextLabel = new Label(strings.book_creating_chapters_failure),
@@ -119,11 +125,14 @@ public class BookCreatingPanel extends Panel {
         final Button cancelButton = new Button(strings.book_creating_button_cancel),
                 backButton = new Button(strings.book_creating_button_back);
         final JList progressDetails = new JList(new DefaultListModel());
-        // cell renderer - set color of font for success and error, based on assumption that chapter name doesn't contain :// character
+        // cell renderer - set color of font for success and error, based on assumption
+        // that chapter name doesn't contain :// character
         progressDetails.setCellRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
+                        cellHasFocus);
                 if (value.toString().contains("://")) { // it's failure - contains address
                     label.setForeground(Color.red);
                 } else {
@@ -134,11 +143,13 @@ public class BookCreatingPanel extends Panel {
 
         });
         final JScrollPane progressDetailsContainer = new JScrollPane(progressDetails);
-        // disable back button on default - before operation ended or user cancelled back button shall be unavaible
+        // disable back button on default - before operation ended or user cancelled
+        // back button shall be unavaible
         backButton.setEnabled(false);
 
         // swing worker - async task that will create book in background
-        // todo: change to multitasking, especially networking - it will give huge speed upgrade
+        // todo: change to multitasking, especially networking - it will give huge speed
+        // upgrade
         // or make it an option in settings.
         new SwingWorker<Object, Object>() {
             long bookSizeInCharacters = 0;
@@ -150,7 +161,8 @@ public class BookCreatingPanel extends Panel {
                 final ChapterRetriever wcr = new ChapterRetriever();
                 int successCounter = 0, failureCounter = 0;
                 String resultDescription;
-                // here we have decicions: for each selected chapter or crawl through chapters until there is no next chapter or maximum amount of chapters received.
+                // here we have decicions: for each selected chapter or crawl through chapters
+                // until there is no next chapter or maximum amount of chapters received.
                 if (chapters != null) { // toc or range
                     for (Chapter wc : chapters) {
                         try {
@@ -160,11 +172,13 @@ public class BookCreatingPanel extends Panel {
                             fs.saveToFile(chapterValues);
                             // if all ok counter of success +1
                             successCounter++;
-                            resultDescription = chapterValues[0] + strings.book_creating_list_success_entry + chapterValues[1].length();
+                            resultDescription = chapterValues[0] + strings.book_creating_list_success_entry
+                                    + chapterValues[1].length();
                             bookSizeInCharacters += chapterValues[1].length() + chapterValues[0].length();
                         } catch (IOException e) {
                             failureCounter++;
-                            resultDescription = strings.book_creating_list_failure_entry + wc.getAddress() + " -> " + e.getMessage();
+                            resultDescription = strings.book_creating_list_failure_entry + wc.getAddress() + " -> "
+                                    + e.getMessage();
                         }
                         // publish results
                         publish(successCounter, failureCounter, resultDescription);
@@ -175,8 +189,9 @@ public class BookCreatingPanel extends Panel {
                     }
                 } else { // crawling
                     String nextChapter = crawlingValues[2];
-                    // initialize crawling 
-                    wcr.initializeCrawling(crawlingValues[1].isEmpty() ? null : new Integer(crawlingValues[1]), crawlingValues[0]);
+                    // initialize crawling
+                    wcr.initializeCrawling(crawlingValues[1].isEmpty() ? null : new Integer(crawlingValues[1]),
+                            crawlingValues[0]);
                     do {
                         try {
                             // get chapterText and title
@@ -186,20 +201,21 @@ public class BookCreatingPanel extends Panel {
                                 fs.saveToFile(chapterValues);
                                 // if all ok counter of success +1
                                 successCounter++;
-                                resultDescription = chapterValues[0] + strings.book_creating_list_success_entry + chapterValues[1].length();
+                                resultDescription = chapterValues[0] + strings.book_creating_list_success_entry
+                                        + chapterValues[1].length();
                                 bookSizeInCharacters += chapterValues[1].length() + chapterValues[0].length();
-                            } catch (Exception ex) { // soft crash - unable to save one of chapters it does not mean that we have to abort operation.
+                            } catch (Exception ex) { // soft crash - unable to save one of chapters it does not mean
+                                                     // that we have to abort operation.
                                 failureCounter++;
-                                resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> " + ex.getMessage();
+                                resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
+                                        + ex.getMessage();
                             }
-                        } catch (Exception e) { // hard crash - unable to get values for chapter from web, on crawling it means that we have to abort operation.                            
-                            resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> " + e.getMessage();
+                        } catch (Exception e) { // hard crash - unable to get values for chapter from web, on crawling
+                                                // it means that we have to abort operation.
+                            resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
+                                    + e.getMessage();
                             // make sure that loop will break after publishing results
-                            chapterValues = new String[]{
-                                null,
-                                null,
-                                null
-                            };
+                            chapterValues = new String[] { null, null, null };
                         }
                         // publish results
                         publish(successCounter, failureCounter, resultDescription);
@@ -220,14 +236,16 @@ public class BookCreatingPanel extends Panel {
                 // update labels
                 chaptersSuccessValueLabel.setText(chunks.get(0).toString());
                 chaptersFailureValueLabel.setText(chunks.get(1).toString());
-                // update list on success chapter title + number of characters, on failure chapter address and exeption message.
+                // update list on success chapter title + number of characters, on failure
+                // chapter address and exeption message.
                 ((DefaultListModel) progressDetails.getModel()).addElement(chunks.get(2));
             }
 
             @Override
             protected void done() {
                 // show finish message and raport
-                WebBookDownloader.gui.showInformationDialog(strings.dialog_book_creating_raport_title, strings.dialog_book_creating_raport_message + bookSizeInCharacters);
+                WebBookDownloader.gui.showInformationDialog(strings.dialog_book_creating_raport_title,
+                        strings.dialog_book_creating_raport_message + bookSizeInCharacters);
                 // disable cancel button, enable back button
                 backButton.setEnabled(true);
                 cancelButton.setEnabled(false);
@@ -268,10 +286,7 @@ public class BookCreatingPanel extends Panel {
         add(b);
         add(progressBar);
         add(progressDetailsContainer);
-        add(createHorizontallyCenteredComponent(new JComponent[]{
-            cancelButton,
-            backButton
-        }));
+        add(createHorizontallyCenteredComponent(new JComponent[] { cancelButton, backButton }));
 
     }
 

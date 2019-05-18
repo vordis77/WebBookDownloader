@@ -73,54 +73,35 @@ public class ChapterSelectingPanel extends Panel {
     public void initializePanel() {
         // components
         final JTabbedPane tabbedPane = new JTabbedPane();
-        final TextField indexAddressText = new TextField(),
-                rangeStartAddressText = new TextField(),
-                rangeEndAddressText = new TextField(),
-                startAddressText = new TextField(),
-                numberOfChaptersText = new TextField(),
-                nextChapterLinkNameText = new TextField("Next Chapter");
-        tabbedPane.addTab(strings.range_choosing_tab1, createHorizontallyCenteredComponent(new JComponent[]{
-            new Label(strings.range_choosing_index_adress),
-            indexAddressText
-        }));
-        tabbedPane.addTab(strings.range_choosing_tab2, createVerticallyCenteredComponent(new JComponent[]{
-            createHorizontallyCenteredComponent(new JComponent[]{
-                new Label(strings.range_choosing_adress_start),
-                rangeStartAddressText
-            }),
-            createHorizontallyCenteredComponent(new JComponent[]{
-                new Label(strings.range_choosing_adress_end),
-                rangeEndAddressText
-            }),})
-        );
-        tabbedPane.addTab(strings.range_choosing_tab3, createVerticallyCenteredComponent(new JComponent[]{
-            createHorizontallyCenteredComponent(new JComponent[]{
-                new Label(strings.range_choosing_adress_start),
-                startAddressText
-            }),
-            createHorizontallyCenteredComponent(new JComponent[]{
-                new Label(strings.range_choosing_number_of_chapters),
-                numberOfChaptersText
-            }),
-            createHorizontallyCenteredComponent(new JComponent[]{
-                new Label(strings.range_choosing_next_chapter_link_name),
-                nextChapterLinkNameText
-            }),
-        })
-        );
+        final TextField indexAddressText = new TextField(), rangeStartAddressText = new TextField(),
+                rangeEndAddressText = new TextField(), startAddressText = new TextField(),
+                numberOfChaptersText = new TextField(), nextChapterLinkNameText = new TextField("Next Chapter");
+        tabbedPane.addTab(strings.range_choosing_tab1, createHorizontallyCenteredComponent(
+                new JComponent[] { new Label(strings.range_choosing_index_adress), indexAddressText }));
+        tabbedPane.addTab(strings.range_choosing_tab2, createVerticallyCenteredComponent(new JComponent[] {
+                createHorizontallyCenteredComponent(
+                        new JComponent[] { new Label(strings.range_choosing_adress_start), rangeStartAddressText }),
+                createHorizontallyCenteredComponent(
+                        new JComponent[] { new Label(strings.range_choosing_adress_end), rangeEndAddressText }), }));
+        tabbedPane.addTab(strings.range_choosing_tab3, createVerticallyCenteredComponent(new JComponent[] {
+                createHorizontallyCenteredComponent(
+                        new JComponent[] { new Label(strings.range_choosing_adress_start), startAddressText }),
+                createHorizontallyCenteredComponent(new JComponent[] {
+                        new Label(strings.range_choosing_number_of_chapters), numberOfChaptersText }),
+                createHorizontallyCenteredComponent(new JComponent[] {
+                        new Label(strings.range_choosing_next_chapter_link_name), nextChapterLinkNameText }), }));
         final Button confirmButton = new Button(strings.range_choosing_confirm_button);
         // listeners
         confirmButton.addActionListener((ActionEvent e) -> {
             if (tabbedPane.getSelectedIndex() == 2) { // if crawling go straight to next panel
-                askForFileNameAndProceedToBookCreatingPane(null, new String[]{
-                    nextChapterLinkNameText.getText(),
-                    numberOfChaptersText.getText(),
-                    startAddressText.getText()
-                }); 
-            } else { // craete progress bar when loading chapters, allow selection of chapters after loading commenced
+                askForFileNameAndProceedToBookCreatingPane(null, new String[] { nextChapterLinkNameText.getText(),
+                        numberOfChaptersText.getText(), startAddressText.getText() });
+            } else { // craete progress bar when loading chapters, allow selection of chapters after
+                     // loading commenced
                 final JProgressBar progressBar = new JProgressBar();
                 progressBar.setIndeterminate(true);
-                progressBar.setPreferredSize(new Dimension(Dimensions.PROGRESS_BAR_WIDTH, Dimensions.PROGRESS_BAR_HEIGHT));
+                progressBar
+                        .setPreferredSize(new Dimension(Dimensions.PROGRESS_BAR_WIDTH, Dimensions.PROGRESS_BAR_HEIGHT));
                 final JDialog dialog = new JDialog(WebBookDownloader.gui.getProgramFrame(), "Doing Work...", false);
                 // prevent user from closing manually
                 enableComponents(this, false);
@@ -134,20 +115,23 @@ public class ChapterSelectingPanel extends Panel {
                     @Override
                     protected ArrayList<Chapter> doInBackground() throws Exception {
                         switch (tabbedPane.getSelectedIndex()) {
-                            case 0: {// table of contents
-                                try {
-                                    return wlr.getChaptersFromTOC(indexAddressText.getText());
-                                } catch (IOException ex) {
-                                    if (ex instanceof MalformedURLException) { // bad url error
-                                        WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle, strings.dialog_invalid_address_message + "\n" + ex.getMessage());
-                                    } else { // io error
-                                        WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle, strings.dialog_io_error_message + "\n" + ex.getMessage());
-                                    }
-                                    return null;
+                        case 0: {// table of contents
+                            try {
+                                return wlr.getChaptersFromTOC(indexAddressText.getText());
+                            } catch (IOException ex) {
+                                if (ex instanceof MalformedURLException) { // bad url error
+                                    WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
+                                            strings.dialog_invalid_address_message + "\n" + ex.getMessage());
+                                } else { // io error
+                                    WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
+                                            strings.dialog_io_error_message + "\n" + ex.getMessage());
                                 }
+                                return null;
                             }
-                            case 1: // range
-                                return wlr.getChaptersFromRange(rangeStartAddressText.getText(), rangeEndAddressText.getText());
+                        }
+                        case 1: // range
+                            return wlr.getChaptersFromRange(rangeStartAddressText.getText(),
+                                    rangeEndAddressText.getText());
                         }
                         // should not occur
                         return null;
@@ -174,7 +158,8 @@ public class ChapterSelectingPanel extends Panel {
     }
 
     private void confirmChaptersAndGoToCreatingBookPanel(ArrayList<Chapter> chapters) {
-        // check if chapters are not empty and are not null -- empty if not found links on site, null if any error occured while loading links
+        // check if chapters are not empty and are not null -- empty if not found links
+        // on site, null if any error occured while loading links
         if (chapters == null || chapters.isEmpty()) {
             return; // end prematurely
         }
@@ -184,12 +169,15 @@ public class ChapterSelectingPanel extends Panel {
         final JScrollPane listContainer = new JScrollPane(chapterList);
         listContainer.setPreferredSize(new Dimension(Dimensions.FRAME_WIDTH, Dimensions.FRAME_HEIGHT));
         // show list in dialog
-        if (JOptionPane.showConfirmDialog(WebBookDownloader.gui.getProgramFrame(), listContainer, strings.dialog_chapter_selection_title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            // user confirmed - get selected chapters and open chapter crawlingPanel with them
+        if (JOptionPane.showConfirmDialog(WebBookDownloader.gui.getProgramFrame(), listContainer,
+                strings.dialog_chapter_selection_title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+            // user confirmed - get selected chapters and open chapter crawlingPanel with
+            // them
             final ArrayList<Chapter> selectedChapters = new ArrayList<>(chapterList.getSelectedValuesList());
             // check if user selected chapters
             if (selectedChapters.isEmpty()) {
-                WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle, strings.dialog_no_chapter_selected_message);
+                WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
+                        strings.dialog_no_chapter_selected_message);
                 return;
             }
 
@@ -203,29 +191,33 @@ public class ChapterSelectingPanel extends Panel {
         // ask for fileName and Path with extension depending on fileType
         final String extension;
         switch (Settings.fileType) {
-            case Settings.FILE_EPUB:
-                extension = ".epub";
-                break;
-            case Settings.FILE_TXT:
-                extension = ".txt";
-                break;
-            case Settings.FILE_PDF:
-                extension = ".pdf";
-                break;
-            default:
-                extension = ".txt";
-                break;
+        case Settings.FILE_EPUB:
+            extension = ".epub";
+            break;
+        case Settings.FILE_TXT:
+            extension = ".txt";
+            break;
+        case Settings.FILE_PDF:
+            extension = ".pdf";
+            break;
+        default:
+            extension = ".txt";
+            break;
         }
-        final FileDialog fd = new FileDialog(WebBookDownloader.gui.getProgramFrame(), strings.dialog_file_create, FileDialog.SAVE);
+        final FileDialog fd = new FileDialog(WebBookDownloader.gui.getProgramFrame(), strings.dialog_file_create,
+                FileDialog.SAVE);
         fd.setFilenameFilter((File dir, String name) -> {
-            return new File(dir.getAbsolutePath().concat(File.separator).concat(name)).isDirectory() || name.contains(extension); // show only folders or files with the same extension.
+            return new File(dir.getAbsolutePath().concat(File.separator).concat(name)).isDirectory()
+                    || name.contains(extension); // show only folders or files with the same extension.
         });
         // set predefined name to book title+.extension
         fd.setFile(wlr.getBookTitle().concat(extension));
         fd.setVisible(true);
         String fileName;
-        if ((fileName = fd.getFile()) != null && fd.getDirectory() != null) { // check if user selected and if yes if directory isn't corrupted.
-            // check if user entered extension, probably not, so we need to add extension to name
+        if ((fileName = fd.getFile()) != null && fd.getDirectory() != null) { // check if user selected and if yes if
+                                                                              // directory isn't corrupted.
+            // check if user entered extension, probably not, so we need to add extension to
+            // name
             fileName = (fileName.contains(extension)) ? fileName : fileName.concat(extension);
             final String filePath = fd.getDirectory().concat(File.separator).concat(fileName);
             // open panel where book will be created.

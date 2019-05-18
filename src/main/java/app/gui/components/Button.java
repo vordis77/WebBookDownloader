@@ -43,7 +43,7 @@ public class Button extends JButton {
     public void doLayout() {
         // before layout set max and prefered size
         super.setBackground(Color.black);
-        super.setForeground(Color.white); // font 
+        super.setForeground(Color.white); // font
         super.doLayout();
     }
 

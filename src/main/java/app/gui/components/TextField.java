@@ -47,7 +47,7 @@ public class TextField extends JTextField {
     public void doLayout() {
         // before layout set max and prefered size
         super.setBackground(Color.black);
-        super.setForeground(Color.white); // font 
+        super.setForeground(Color.white); // font
         super.setMaximumSize(new Dimension(700, 30));
         super.setPreferredSize(new Dimension(700, 30));
         super.setCaretColor(Color.red);

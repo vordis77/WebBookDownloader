@@ -50,7 +50,7 @@ import resources.Settings;
  *
  * @author marcin
  */
-public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven libraries
+public class FileSaver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete savers
 
     private final String filePath, encoding;
     private PrintWriter pw;
@@ -73,106 +73,98 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven l
     /**
      * Creates file. Epub have default encoding - utf-8, but it should be ok.
      *
-     * @throws FileNotFoundException if path is invalid.
+     * @throws FileNotFoundException        if path is invalid.
      * @throws UnsupportedEncodingException if encoding is invalid.
      */
     public void createFile() throws UnsupportedEncodingException, IOException {
         switch (Settings.fileType) {
-            case Settings.FILE_EPUB:
-                ebook = new Book();
-                // Set the title
-                ebook.getMetadata().addTitle(filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.')));
-                // Add an Author
-                ebook.getMetadata().addAuthor(new Author("WebBookDownloader"));
-                break;
-            case Settings.FILE_PDF:
-                // create document
-                document = new PDDocument();
-                //Setting the author of the document
-                document.getDocumentInformation().setAuthor("WebBookDownloader");
-                // Setting the title of the document
-                document.getDocumentInformation().setTitle(filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.')));
-                // content handler
-                ppw = new PDFPageWriter(document);
-                // compute true text width based on used font
-                final float fontFactor = ppw.getFontFactor();
-                pdfTextWidth *= fontFactor;
-                pdfTitleWidth *= fontFactor;
-                break;
-            case Settings.FILE_TXT:
-                pw = new PrintWriter(filePath, encoding);
-                break;
+        case Settings.FILE_EPUB:
+            ebook = new Book();
+            // Set the title
+            ebook.getMetadata().addTitle(filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.')));
+            // Add an Author
+            ebook.getMetadata().addAuthor(new Author("WebBookDownloader"));
+            break;
+        case Settings.FILE_PDF:
+            // create document
+            document = new PDDocument();
+            // Setting the author of the document
+            document.getDocumentInformation().setAuthor("WebBookDownloader");
+            // Setting the title of the document
+            document.getDocumentInformation()
+                    .setTitle(filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.')));
+            // content handler
+            ppw = new PDFPageWriter(document);
+            // compute true text width based on used font
+            final float fontFactor = ppw.getFontFactor();
+            pdfTextWidth *= fontFactor;
+            pdfTitleWidth *= fontFactor;
+            break;
+        case Settings.FILE_TXT:
+            pw = new PrintWriter(filePath, encoding);
+            break;
         }
     }
 
     /**
      * Save chapter into file.
      *
-     * @param values string array where [0] - chapter title, [1] - chapter
-     * text
+     * @param values string array where [0] - chapter title, [1] - chapter text
      * @throws IOException exception if saving failed
      */
     public void saveToFile(String[] values) throws IOException {
         switch (Settings.fileType) {
-            case Settings.FILE_EPUB:
-                ebook.addSection(values[0], new Resource(getEbookChapterValue(values), values[0].concat(".html")));
-                break;
-            case Settings.FILE_PDF:
-                ppw.createPage(values[0]);
-                for (Object object : explodeStringIntoPdfLines(values[1], pdfTextWidth)) {
-                    // check if we have free lines on page, if not then add last page and create new one.
-                    if (!ppw.hasFreeLines()) {
-                        ppw.addPageToDocument();
-                        ppw.createPage(null);
-                    }
-                    // add line to page
-                    ppw.addLine((String) object);
-                }
-                // remember that last page could have not full lines, so it wasn't saved.
-                if (ppw.hasUnsavedProgress()) {
+        case Settings.FILE_EPUB:
+            ebook.addSection(values[0], new Resource(getEbookChapterValue(values), values[0].concat(".html")));
+            break;
+        case Settings.FILE_PDF:
+            ppw.createPage(values[0]);
+            for (Object object : explodeStringIntoPdfLines(values[1], pdfTextWidth)) {
+                // check if we have free lines on page, if not then add last page and create new
+                // one.
+                if (!ppw.hasFreeLines()) {
                     ppw.addPageToDocument();
+                    ppw.createPage(null);
                 }
-                break;
-            case Settings.FILE_TXT:
-                pw.print(values[0] + "\n" + values[1] + "\n");
-                break;
+                // add line to page
+                ppw.addLine((String) object);
+            }
+            // remember that last page could have not full lines, so it wasn't saved.
+            if (ppw.hasUnsavedProgress()) {
+                ppw.addPageToDocument();
+            }
+            break;
+        case Settings.FILE_TXT:
+            pw.print(values[0] + "\n" + values[1] + "\n");
+            break;
         }
     }
 
     public void closeFile() throws IOException {
         switch (Settings.fileType) {
-            case Settings.FILE_EPUB:
-                // Create EpubWriter
-                EpubWriter epubWriter = new EpubWriter();
-                // Write the Book as Epub
-                epubWriter.write(ebook, new FileOutputStream(filePath));
-                break;
-            case Settings.FILE_PDF:
-                // save document 
-                document.save(filePath);
-                // close document
-                document.close();
-                break;
-            case Settings.FILE_TXT:
-                pw.flush(); // flush to be sure that everything was saved.
-                pw.close();
-                pw = null;
-                break;
+        case Settings.FILE_EPUB:
+            // Create EpubWriter
+            EpubWriter epubWriter = new EpubWriter();
+            // Write the Book as Epub
+            epubWriter.write(ebook, new FileOutputStream(filePath));
+            break;
+        case Settings.FILE_PDF:
+            // save document
+            document.save(filePath);
+            // close document
+            document.close();
+            break;
+        case Settings.FILE_TXT:
+            pw.flush(); // flush to be sure that everything was saved.
+            pw.close();
+            pw = null;
+            break;
         }
     }
 
     private byte[] getEbookChapterValue(String[] values) throws UnsupportedEncodingException {
-        String htmlString = "<html>\n"
-                + "<head>\n"
-                + "	<title>" + values[0] + "</title>\n"
-                + "</head>\n"
-                + "<body>\n"
-                + "<h1>" + values[0] + "</h1>\n"
-                + "<p>\n"
-                + values[1]
-                + "</p>\n"
-                + "</body>\n"
-                + "</html>";
+        String htmlString = "<html>\n" + "<head>\n" + "	<title>" + values[0] + "</title>\n" + "</head>\n" + "<body>\n"
+                + "<h1>" + values[0] + "</h1>\n" + "<p>\n" + values[1] + "</p>\n" + "</body>\n" + "</html>";
 
         return htmlString.getBytes(encoding);
     }
@@ -191,27 +183,30 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven l
 
         public PDFPageWriter(PDDocument document) throws IOException {
             this.document = document;
-            font = PDType0Font.load(document, new FileInputStream(Settings.workingDirectoryPath.concat("fonts").concat(File.separator).concat(Settings.pdfFontFile)), true);
-            
+            font = PDType0Font.load(document, new FileInputStream(
+                    Settings.workingDirectoryPath.concat("fonts").concat(File.separator).concat(Settings.pdfFontFile)),
+                    true);
+
         }
-        
+
         /**
          * Compute font factor - difference between desirable and font used.
+         * 
          * @return font factor, multiply textWidth by it to get desirable textWidth.
-         * @throws IOException exception if error occured.
+         * @throws IOException exception if error occurred.
          */
         public float getFontFactor() throws IOException {
             final float desirableWidth = 4700f;
             final String testString = "M M M M "; // longest characters
             final float testWidth = font.getStringWidth(testString);
-            return desirableWidth/testWidth;
+            return desirableWidth / testWidth;
         }
 
         /**
          * This method creates new page, if you are reusing it remember to call
          * addPageToDocument first.
          *
-         * @param title title of document or null if non titled page.
+         * @param title    title of document or null if non titled page.
          * @param document document.
          * @throws IOException exception if unable to save.
          */
@@ -223,9 +218,11 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven l
             contentStream.beginText();
             contentStream.newLineAtOffset(25, 730); // caret start
             if (title != null) {
-                contentStream.setLeading(22.5f); // vertical space between lines for title it needs to be a little bigger
+                contentStream.setLeading(22.5f); // vertical space between lines for title it needs to be a little
+                                                 // bigger
                 contentStream.setFont(font, 22); // title format
-                // add title, take into account that it can span multi lines, probalby only 2 but better safe than sorry
+                // add title, take into account that it can span multi lines, probably only 2
+                // but better safe than sorry
                 for (Object o : explodeStringIntoPdfLines(title, pdfTitleWidth)) {
                     addLine((String) o);
                 }
@@ -262,13 +259,15 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven l
          * @throws IOException exception if operation failed.
          */
         public void addLine(String line) throws IOException {
-            // pdfBox has stupid errors with fonts - encoding characters, so we will just catch exceptions and replace recursively.
+            // pdfBox has stupid errors with fonts - encoding characters, so we will just
+            // catch exceptions and replace recursively.
             try {
                 contentStream.showText(line = parseString(line));
             } catch (Exception ex) {
                 if (ex.getMessage().contains("No glyph for")) { // check if font failed
-                    int index = ex.getMessage().indexOf("U+")+2;
-                    addLine(line.replace((char) Integer.parseInt(ex.getMessage().substring(index, index + 4), 16), '?'));
+                    int index = ex.getMessage().indexOf("U+") + 2;
+                    addLine(line.replace((char) Integer.parseInt(ex.getMessage().substring(index, index + 4), 16),
+                            '?'));
                 } else { // other error, pass exception up
                     throw ex;
                 }
@@ -284,7 +283,8 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven l
          * @return parsed string.
          */
         private String parseString(String string) {
-            return string.replace((char) 0x00a0, ' ').replace((char) 0x2600, '*'); // replace two chars, which can make problems in multiple fonts.
+            return string.replace((char) 0x00a0, ' ').replace((char) 0x2600, '*'); // replace two chars, which can make
+                                                                                   // problems in multiple fonts.
         }
 
         /**
@@ -304,9 +304,10 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 15:31:18} change to maven l
     private Object[] explodeStringIntoPdfLines(String string, int lineWidth) {
         ArrayList<String> lineList = new ArrayList<>();
         int lastIndex = 0, rangeStart;
-        while ((rangeStart = lastIndex) < string.length()) { // go until 
+        while ((rangeStart = lastIndex) < string.length()) { // go until
             lastIndex = string.indexOf(' ', rangeStart + lineWidth) + 1; // space last in line, not in the next
-            if (lastIndex == 0) { // if last index is not found, then it means we are at the end of the string with no more spaces left
+            if (lastIndex == 0) { // if last index is not found, then it means we are at the end of the string
+                                  // with no more spaces left
                 lastIndex = string.length();
             }
             lineList.add(string.substring(rangeStart, lastIndex));

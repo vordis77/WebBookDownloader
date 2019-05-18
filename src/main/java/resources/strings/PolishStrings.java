@@ -33,48 +33,21 @@ package resources.strings;
 public class PolishStrings extends Strings {
 
     public PolishStrings() {
-        super("Blad",
-                "WebBookDownloader",
-                "Program",
-                "Pomoc",
-                "Zamknij",
-                "O programie",
-                "WebBookDownloader v 1.0\n"
-                        + "Ten program pozwala zapisywac strony internetowe jako ksiazki.\n"
-                        + "Copyright (c) 2017\n"
-                        + "Autor Marcin Klimek",
-                "Indeks",
-                "Zakres",
-                "Pełzanie",
-                "Adres spisu treści: ",
-                "Adres pierwszego rozdziału: ",
-                "Adres ostatniego rozdziału: ",
-                "Liczba rozdziałów(zostaw puste aby odczytać wszystkie): ",
-                "Potwierdź",
+        super("Blad", "WebBookDownloader", "Program", "Pomoc", "Zamknij", "O programie",
+                "WebBookDownloader v 1.0\n" + "Ten program pozwala zapisywac strony internetowe jako ksiazki.\n"
+                        + "Copyright (c) 2017\n" + "Autor Marcin Klimek",
+                "Indeks", "Zakres", "Pełzanie", "Adres spisu treści: ", "Adres pierwszego rozdziału: ",
+                "Adres ostatniego rozdziału: ", "Liczba rozdziałów(zostaw puste aby odczytać wszystkie): ", "Potwierdź",
                 "Adres, ktory wprowadziles jest nieprawidlowy.",
-                "Nie udalo sie ustanowic polaczenia ze strona, ktora podales.",
-                "Wybierz rozdzialy",
-                "Prosze czekac...",
-                "Stworz plik.",
-                "Sukces: ",
-                "Porazka: ",
-                "Wszystkie: ",
-                "Anuluj",
-                "Powrot",
-                "Musisz wybrac conajmniej jeden rozdzial",
-                "Niewlasciwa nazwa pliku!",
+                "Nie udalo sie ustanowic polaczenia ze strona, ktora podales.", "Wybierz rozdzialy", "Prosze czekac...",
+                "Stworz plik.", "Sukces: ", "Porazka: ", "Wszystkie: ", "Anuluj", "Powrot",
+                "Musisz wybrac conajmniej jeden rozdzial", "Niewlasciwa nazwa pliku!",
                 " pobrano i zapisano pomyslnie, dlugosc rozdzialu(w znakach): ",
                 "Nie udalo sie pobrac lub zapisac rozdzialu. Adres nieudanego rozdzialu oraz przyczyna bledu: ",
-                "Raport",
-                "Operacja zakonczona, rozmiar ksiazki w znakach: ",
-                "Nazwa link'a do nastepnego rozdziału: ",
-                "Ustawienia",
-                "Uwaga, niektore ustawienia beda aktywne dopiero po restarcie programu.",
-                "Język: ",
-                "Format książki: ",
-                "Element html, który zawiera akapity w rozdziale strony internetowej.",
-                "Kodowanie strony internetowej: ",
-                "Plik z czcionką do pdf: ");
+                "Raport", "Operacja zakonczona, rozmiar ksiazki w znakach: ", "Nazwa link'a do nastepnego rozdziału: ",
+                "Ustawienia", "Uwaga, niektore ustawienia beda aktywne dopiero po restarcie programu.", "Język: ",
+                "Format książki: ", "Element html, który zawiera akapity w rozdziale strony internetowej.",
+                "Kodowanie strony internetowej: ", "Plik z czcionką do pdf: ");
     }
 
 }

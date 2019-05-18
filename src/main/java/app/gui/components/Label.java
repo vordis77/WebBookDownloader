@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 
 /**
  * JLabel with custom font color.
+ * 
  * @author marcin
  */
 public class Label extends JLabel {
@@ -37,12 +38,12 @@ public class Label extends JLabel {
     public Label(String content) {
         super(content);
     }
-    
+
     @Override
     public void doLayout() {
         // before layout set max and prefered size
-        super.setForeground(Color.white); // font 
-        super.doLayout(); 
+        super.setForeground(Color.white); // font
+        super.doLayout();
     }
-    
+
 }

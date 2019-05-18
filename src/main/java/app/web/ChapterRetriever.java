@@ -50,26 +50,31 @@ public class ChapterRetriever {
         // get html of the chapter site
         final String html = Driver.readSite(address);
         // return chapter in form of table: 0 - title, 1 - text
-        return new String[]{
-            getChapterTitle(html),
-            getChapterText(html)
-        };
+        return new String[] { getChapterTitle(html), getChapterText(html) };
     }
 
     private String getChapterText(String document) {
         int size = 0, chapterTextBlockStartIndex, chapterTextBlockEndIndex = 0, divTagCount, index, newSize;
         int[] blockBounds = new int[2];
-        // go over blocks with paragraphs, get one with the biggest size of text(parse it).
-        while ((chapterTextBlockStartIndex = document.indexOf(Settings.chapterParagraphContainer, chapterTextBlockEndIndex)) != -1) { // search for paragraphs until there is none left, jump over sub-divs.
+        // go over blocks with paragraphs, get one with the biggest size of text(parse
+        // it).
+        while ((chapterTextBlockStartIndex = document.indexOf(Settings.chapterParagraphContainer,
+                chapterTextBlockEndIndex)) != -1) { // search for paragraphs until there is none left, jump over
+                                                    // sub-divs.
             // set tag counter as unended
             divTagCount = 1;
             // jump to end of div if there are any sub-divs
             index = chapterTextBlockStartIndex;
-            while (divTagCount > 0) { // on default we start with 1 tag count - we are in some div, now we want to find its end.
-                index = document.indexOf("div", index); // get index of div tag, we can also find normal text , thats why else if                
-                // validate index, we cant assume that all websites are properly written(or we can find ourselves in script, where we don't know if there are any containers). Error coming from it is not critical
+            while (divTagCount > 0) { // on default we start with 1 tag count - we are in some div, now we want to
+                                      // find its end.
+                index = document.indexOf("div", index); // get index of div tag, we can also find normal text , thats
+                                                        // why else if
+                // validate index, we cant assume that all websites are properly written(or we
+                // can find ourselves in script, where we don't know if there are any
+                // containers). Error coming from it is not critical
                 if (index == -1) {
-                    index = chapterTextBlockStartIndex + 2; // create dummy range - 0-1 character, just to pass this useless piece of text
+                    index = chapterTextBlockStartIndex + 2; // create dummy range - 0-1 character, just to pass this
+                                                            // useless piece of text
                     break;
                 }
                 // check if tag is ending or begining
@@ -78,16 +83,18 @@ public class ChapterRetriever {
                 } else if (document.charAt(index - 1) == '/') { // ending tag
                     divTagCount--;
                 }
-                // pass tag length to index, so we will find next, not the same 
+                // pass tag length to index, so we will find next, not the same
                 index += 4;
             }
-            // if chapter paragraph contaiener is <br then we need to use parent index as start
+            // if chapter paragraph contaiener is <br then we need to use parent index as
+            // start
             if (Settings.chapterParagraphContainer.equals("<br")) {
                 chapterTextBlockStartIndex = document.lastIndexOf("<div", chapterTextBlockStartIndex);
             }
             // after loop we should have index of block end
             chapterTextBlockEndIndex = index;
-            newSize = Jsoup.parse(document.substring(chapterTextBlockStartIndex, chapterTextBlockEndIndex)).text().length();
+            newSize = Jsoup.parse(document.substring(chapterTextBlockStartIndex, chapterTextBlockEndIndex)).text()
+                    .length();
             if (newSize > size) {
                 size = newSize;
                 blockBounds[0] = chapterTextBlockStartIndex;
@@ -95,7 +102,8 @@ public class ChapterRetriever {
             }
         }
 
-        // after loop we should have indexes of chapter text container, now clean it(remove next chapter, previous chapter and trim).
+        // after loop we should have indexes of chapter text container, now clean
+        // it(remove next chapter, previous chapter and trim).
         String chapterText = Jsoup.parse(document.substring(blockBounds[0], blockBounds[1])).text();
         chapterText = chapterText.replaceAll("Previous.Chapter", "");
         chapterText = chapterText.replaceAll("Next.Chapter", "");
@@ -110,15 +118,16 @@ public class ChapterRetriever {
         title = Jsoup.parse(title).text(); // parse escape chars
         // fix chapter name from second onwards
         if (lastChapterTitle == null) { // first chapter - full title, store it as last chapter title
-            return lastChapterTitle = title; // if index is still not found just pass full title, index minimally should be more than 2 - 1 for space, 1 for char 
+            return lastChapterTitle = title; // if index is still not found just pass full title, index minimally should
+                                             // be more than 2 - 1 for space, 1 for char
         } else { // second chapter+ - trim to only chapter text;
             int index;
-            // todo: check if most of the sites have useless additions at the end of the title 
-            /*index = 0;
-            while (title.charAt(index) == lastChapterTitle.charAt(index)) {
-                index++;
-            }
-            title = title.substring(index);*/
+            // todo: check if most of the sites have useless additions at the end of the
+            // title
+            /*
+             * index = 0; while (title.charAt(index) == lastChapterTitle.charAt(index)) {
+             * index++; } title = title.substring(index);
+             */
             // find end index
             index = 1;
             while (title.charAt(title.length() - index) == lastChapterTitle.charAt(lastChapterTitle.length() - index)) {
@@ -133,7 +142,8 @@ public class ChapterRetriever {
     public void initializeCrawling(Integer numberOfChapters, String nextLinkName) {
         if (numberOfChapters != null) {
             crawlingCounter = numberOfChapters - 1;
-        } // -1 because we have + 1 because of way of reading - chapter is read than we check for next, and only there is checked condition.
+        } // -1 because we have + 1 because of way of reading - chapter is read than we
+          // check for next, and only there is checked condition.
         this.nextLinkName = nextLinkName;
     }
 
@@ -141,8 +151,7 @@ public class ChapterRetriever {
      * Retrieve chapter valeus from website by crawling.
      *
      * @param address address of the website.
-     * @return [0] - chapter title; [1] - chapter text; [2] - next chapter
-     * address
+     * @return [0] - chapter title; [1] - chapter text; [2] - next chapter address
      * @throws java.io.IOException if error in conection
      */
     public String[] retrieveChapterCrawling(String address) throws IOException {
@@ -150,15 +159,13 @@ public class ChapterRetriever {
         final String html = Driver.readSite(address);
         // return chapter in form of table: 0 - title, 1 - text, 2 - next chapter
 
-        return new String[]{
-            getChapterTitle(html),
-            getChapterText(html),
-            getNextChapterAddress(html, address)
-        };
+        return new String[] { getChapterTitle(html), getChapterText(html), getNextChapterAddress(html, address) };
     }
 
     private String getNextChapterAddress(String document, String chapterAbsoluteAddress) {
-        if (crawlingCounter == null || crawlingCounter > 0) { // > 0 - user friendly no 0 index. check if we don't exceed number of chapters specified by user or counter is unspecified meaning that we crawl to the end.
+        if (crawlingCounter == null || crawlingCounter > 0) { // > 0 - user friendly no 0 index. check if we don't
+                                                              // exceed number of chapters specified by user or counter
+                                                              // is unspecified meaning that we crawl to the end.
             if (crawlingCounter != null) {
                 crawlingCounter--; // if we have restricted amount, then decrement it.
             }
@@ -167,14 +174,28 @@ public class ChapterRetriever {
                 return null;
             }
             int indexOfLinkStart = document.lastIndexOf("href=", indexOfName),
-                    indexOfLinkEnd = document.indexOf(document.charAt(indexOfLinkStart + 5), indexOfLinkStart + 6); // end - find char which is bracket of link than find it counterpart.
+                    indexOfLinkEnd = document.indexOf(document.charAt(indexOfLinkStart + 5), indexOfLinkStart + 6); // end
+                                                                                                                    // -
+                                                                                                                    // find
+                                                                                                                    // char
+                                                                                                                    // which
+                                                                                                                    // is
+                                                                                                                    // bracket
+                                                                                                                    // of
+                                                                                                                    // link
+                                                                                                                    // than
+                                                                                                                    // find
+                                                                                                                    // it
+                                                                                                                    // counterpart.
             if (indexOfLinkStart != -1 && indexOfLinkEnd != -1) { // if indexes ok - all was found properly
                 String link = document.substring(indexOfLinkStart + 6, indexOfLinkEnd);
                 // check if link is absolute if not fix it.
                 if (!link.contains("://")) {
                     // we have full address to previous chapter, but we need only part of it.
-                    // new way - find position of local link first address part in absolute, if it doesnt exist concate whole links.
-                    int localPartEnd = link.indexOf('/', 1); // get first slash - delimiting first folder in path, if there isn't one just concate with absolute - last path
+                    // new way - find position of local link first address part in absolute, if it
+                    // doesnt exist concate whole links.
+                    int localPartEnd = link.indexOf('/', 1); // get first slash - delimiting first folder in path, if
+                                                             // there isn't one just concate with absolute - last path
                     int absoluteEnd;
                     if (localPartEnd > -1) {
                         absoluteEnd = chapterAbsoluteAddress.indexOf(link.substring(0, localPartEnd));

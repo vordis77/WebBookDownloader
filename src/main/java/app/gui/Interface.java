@@ -71,14 +71,14 @@ public class Interface {
         programFrame.setPreferredSize(new Dimension(Dimensions.FRAME_WIDTH, Dimensions.FRAME_HEIGHT));
         programFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // icon
-        programFrame.setIconImage(new ImageIcon(System.getProperty("user.dir").concat(File.separator).concat("icon.jpg")).getImage());
+        programFrame.setIconImage(
+                new ImageIcon(System.getProperty("user.dir").concat(File.separator).concat("icon.jpg")).getImage());
         programFrame.setResizable(false);
-        // menu 
+        // menu
         // bar
         final JMenuBar menuBar = new JMenuBar();
         // menus
-        final JMenu programMenu = new JMenu(strings.menu_program_title),
-                helpMenu = new JMenu(strings.menu_help_title);
+        final JMenu programMenu = new JMenu(strings.menu_program_title), helpMenu = new JMenu(strings.menu_help_title);
         // menu items
         final JMenuItem closeItem = new JMenuItem(strings.menu_program_close_item),
                 settingsItem = new JMenuItem(strings.menu_program_settings_item),
@@ -89,29 +89,19 @@ public class Interface {
             System.exit(0);
         });
         settingsItem.addActionListener((ActionEvent e) -> {
-            // show confirm dialog,  which allows user to change settings. On ok save settings file.
+            // show confirm dialog, which allows user to change settings. On ok save
+            // settings file.
             // language label + comboBox
-            final JComboBox<String> languageBox = new JComboBox<>(new String[]{
-                "english",
-                "polski"
-            });
+            final JComboBox<String> languageBox = new JComboBox<>(new String[] { "english", "polski" });
             // book type
-            final JComboBox<String> bookTypeBox = new JComboBox<>(new String[]{
-                "TXT",
-                "EPUB",
-                "PDF"
-            });
+            final JComboBox<String> bookTypeBox = new JComboBox<>(new String[] { "TXT", "EPUB", "PDF" });
             // paragraph element
-            final JComboBox<String> htmlElementBox = new JComboBox<>(new String[]{
-                "<p",
-                "<a",
-                "<br",
-                "<span",
-            });
+            final JComboBox<String> htmlElementBox = new JComboBox<>(new String[] { "<p", "<a", "<br", "<span", });
             // encoding label + comboBox
             final JComboBox<Object> encodingBox = new JComboBox<>(Charset.availableCharsets().keySet().toArray());
-            // font label + comboBox            
-            final JComboBox<Object> fontBox = new JComboBox<>(new File(Settings.workingDirectoryPath.concat("fonts")).list());
+            // font label + comboBox
+            final JComboBox<Object> fontBox = new JComboBox<>(
+                    new File(Settings.workingDirectoryPath.concat("fonts")).list());
 
             // select current values from global settings
             languageBox.setSelectedIndex(Settings.programLanguage);
@@ -119,23 +109,16 @@ public class Interface {
             htmlElementBox.setSelectedItem(Settings.chapterParagraphContainer);
             encodingBox.setSelectedItem(Settings.encoding);
             fontBox.setSelectedItem(Settings.pdfFontFile);
-            
-            // container
-            final JComponent[] components = new JComponent[]{
-                new JLabel(strings.settings_note),
-                new JLabel(strings.setings_language),
-                languageBox,
-                new JLabel(strings.settings_format),
-                bookTypeBox,
-                new JLabel(strings.settings_html_element),
-                htmlElementBox,
-                new JLabel(strings.settings_website_encoding),
-                encodingBox,
-                new JLabel(strings.settings_pdf_font),
-                fontBox
-            };
 
-            if (JOptionPane.showConfirmDialog(programFrame, components, strings.menu_program_settings_item, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+            // container
+            final JComponent[] components = new JComponent[] { new JLabel(strings.settings_note),
+                    new JLabel(strings.setings_language), languageBox, new JLabel(strings.settings_format), bookTypeBox,
+                    new JLabel(strings.settings_html_element), htmlElementBox,
+                    new JLabel(strings.settings_website_encoding), encodingBox, new JLabel(strings.settings_pdf_font),
+                    fontBox };
+
+            if (JOptionPane.showConfirmDialog(programFrame, components, strings.menu_program_settings_item,
+                    JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                 // user confirmed choices - update global variables and settings file
                 Settings.programLanguage = languageBox.getSelectedIndex();
                 Settings.fileType = bookTypeBox.getSelectedIndex();
@@ -146,7 +129,7 @@ public class Interface {
                     // save to file
                     WebBookDownloader.saveSettings();
                 } catch (IOException ex) {
-                    // ignore 
+                    // ignore
                 }
             }
         });
@@ -171,7 +154,7 @@ public class Interface {
     /**
      * This method allows you to show small information dialog to user.
      *
-     * @param title title of the dialog.
+     * @param title   title of the dialog.
      * @param message message of the dialog, string or component.
      */
     public void showInformationDialog(String title, Object message) {

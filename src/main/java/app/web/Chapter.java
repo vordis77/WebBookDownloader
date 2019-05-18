@@ -26,7 +26,9 @@
 package app.web;
 
 /**
- * This class represents chapter entity, which comes in 2 dimensions: chapter address, chapter title.
+ * This class represents chapter entity, which comes in 2 dimensions: chapter
+ * address, chapter title.
+ * 
  * @author marcin
  */
 public class Chapter {
@@ -34,9 +36,10 @@ public class Chapter {
 
     /**
      * Create instance of this class.
+     * 
      * @param address http address of the chapter.
-     * @param title string title of the chapter.
-    */
+     * @param title   string title of the chapter.
+     */
     public Chapter(String address, String title) {
         this.address = address;
         this.title = title;
@@ -46,24 +49,24 @@ public class Chapter {
     public String toString() {
         return title + " - " + address;
     }
-    
+
     /**
      * Get chapter website address.
+     * 
      * @return chapters website address.
      */
     public String getAddress() {
         return address;
     }
-    
+
     /**
-     * Get chapter title. It can be inaccurate, especially if user passed chapters from range generator. Prefer ChapterRetriever title over it.
+     * Get chapter title. It can be inaccurate, especially if user passed chapters
+     * from range generator. Prefer ChapterRetriever title over it.
+     * 
      * @return chapter title.
      */
     public String getTitle() {
         return title;
-    }  
-    
-    
-    
-    
+    }
+
 }

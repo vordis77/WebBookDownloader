@@ -47,12 +47,14 @@ public abstract class Panel extends JPanel {
     public void doLayout() {
         super.setBackground(Color.DARK_GRAY);
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        super.doLayout(); //To change body of generated methods, choose Tools | Templates.
+        super.doLayout(); // To change body of generated methods, choose Tools | Templates.
     }
 
     /**
      * Add components to panel in this method.
-     * @throws java.lang.Exception exception if fatal error occured while building panel.
+     * 
+     * @throws java.lang.Exception exception if fatal error occured while building
+     *                             panel.
      */
     public abstract void initializePanel() throws Exception;
 

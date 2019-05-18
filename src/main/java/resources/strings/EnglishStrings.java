@@ -33,48 +33,21 @@ package resources.strings;
 public class EnglishStrings extends Strings {
 
     public EnglishStrings() {
-        super("Error",
-                "WebBookDownloader",
-                "Program",
-                "Help",
-                "Close",
-                "About program",
+        super("Error", "WebBookDownloader", "Program", "Help", "Close", "About program",
                 "WebBookDownloader v 1.0\n"
                         + "This program allows you to browse through website and download it's content as book\n"
-                        + "Copyright (c) 2017\n"
-                        + "Author Marcin Klimek",
-                "Index",
-                "Range",
-                "Crawl",
-                "Table of contents address: ",
-                "First chapter address: ",
-                "Last chapter address: ",
-                "Number of chapters(leave empty for crawling to the end): ",
-                "Confirm",
-                "Adress, that you provided is invalid.",
-                "Unable to establish connection with site that you provided.",
-                "Select chapters",
-                "Please wait...",
-                "Create file.",
-                "Succeed: ",
-                "Failed: ",
-                "Total: ",
-                "Cancel",
-                "Back",
-                "You have to select at least one chapter!",
-                "Invalid filename!",
+                        + "Copyright (c) 2017\n" + "Author Marcin Klimek",
+                "Index", "Range", "Crawl", "Table of contents address: ", "First chapter address: ",
+                "Last chapter address: ", "Number of chapters(leave empty for crawling to the end): ", "Confirm",
+                "Adress, that you provided is invalid.", "Unable to establish connection with site that you provided.",
+                "Select chapters", "Please wait...", "Create file.", "Succeed: ", "Failed: ", "Total: ", "Cancel",
+                "Back", "You have to select at least one chapter!", "Invalid filename!",
                 " downloaded and saved successfully, length of chapter(in characters): ",
-                "Couldn't download or save chapter. Address of failed chapter and cause: ",
-                "Raport",
-                "Operation finished, size of the book in characters: ",
-                "Name of the link to next chapter: ",
-                "Settings",
-                "Note that some changes will be only reflected after restart of program.",
-                "Language: ",
-                "Format of book: ",
-                "Html element, which contains paragraph in chapter website: ",
-                "Source website encoding: ",
-                "Font file which will be used as font in pdf: ");
+                "Couldn't download or save chapter. Address of failed chapter and cause: ", "Raport",
+                "Operation finished, size of the book in characters: ", "Name of the link to next chapter: ",
+                "Settings", "Note that some changes will be only reflected after restart of program.", "Language: ",
+                "Format of book: ", "Html element, which contains paragraph in chapter website: ",
+                "Source website encoding: ", "Font file which will be used as font in pdf: ");
     }
 
 }

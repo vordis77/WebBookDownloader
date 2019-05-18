@@ -68,15 +68,15 @@ public class WebBookDownloader {
 
         // create corresponding to language Strings instance
         switch (programLanguage) {
-            case LANGUAGE_POLISH:
-                programStrings = new PolishStrings();
-                break;
-            case LANGUAGE_ENGLISH:
-                programStrings = new EnglishStrings();
-                break;
-            default:
-                programStrings = new EnglishStrings();
-                break;
+        case LANGUAGE_POLISH:
+            programStrings = new PolishStrings();
+            break;
+        case LANGUAGE_ENGLISH:
+            programStrings = new EnglishStrings();
+            break;
+        default:
+            programStrings = new EnglishStrings();
+            break;
         }
         // initialize gui tool
         gui = new Interface();
@@ -88,21 +88,21 @@ public class WebBookDownloader {
 
     /**
      * This method loads data from settings file into settings global fields, on
-     * assumption that settings file exists and values lays in strict order,
-     * divided by new line.
+     * assumption that settings file exists and values lays in strict order, divided
+     * by new line.
      */
     private static void loadSettings() throws FileNotFoundException {
-        try (Scanner scan = new Scanner(new File(Settings.workingDirectoryPath.concat("settings.data")))) { //  open file
+        try (Scanner scan = new Scanner(new File(Settings.workingDirectoryPath.concat("settings.data")))) { // open file
             scan.useDelimiter("\n");
             try {
                 String line;
-                // language 
+                // language
                 Settings.programLanguage = scan.nextInt();
                 // book type
                 Settings.fileType = scan.nextInt();
                 // html element
                 Settings.chapterParagraphContainer = scan.next();
-                // get encoding, check if they are supported 
+                // get encoding, check if they are supported
                 // encoding
                 line = scan.next();
                 if (Charset.isSupported(line)) {
@@ -118,11 +118,8 @@ public class WebBookDownloader {
 
     public static void saveSettings() throws IOException {
         try (FileWriter fw = new FileWriter(Settings.workingDirectoryPath.concat("settings.data"))) {
-            fw.append(Settings.programLanguage + "\n"
-                    + Settings.fileType + "\n"
-                    + Settings.chapterParagraphContainer + "\n"
-                    + Settings.encoding + "\n"
-                    + Settings.pdfFontFile);
+            fw.append(Settings.programLanguage + "\n" + Settings.fileType + "\n" + Settings.chapterParagraphContainer
+                    + "\n" + Settings.encoding + "\n" + Settings.pdfFontFile);
             fw.flush();
         }
     }

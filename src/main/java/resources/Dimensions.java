@@ -32,8 +32,5 @@ package resources;
  */
 public abstract class Dimensions {
 
-    public static final int FRAME_WIDTH = 800,
-            FRAME_HEIGHT = 600,
-            PROGRESS_BAR_WIDTH = 400,
-            PROGRESS_BAR_HEIGHT = 125;
+    public static final int FRAME_WIDTH = 800, FRAME_HEIGHT = 600, PROGRESS_BAR_WIDTH = 400, PROGRESS_BAR_HEIGHT = 125;
 }
