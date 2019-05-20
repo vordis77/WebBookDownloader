@@ -77,10 +77,8 @@ public class WebBookDownloader {
         case LANGUAGE_POLISH:
             programStrings = new PolishStrings();
             break;
-        case LANGUAGE_ENGLISH:
-            programStrings = new EnglishStrings();
-            break;
         default:
+        case LANGUAGE_ENGLISH:
             programStrings = new EnglishStrings();
             break;
         }

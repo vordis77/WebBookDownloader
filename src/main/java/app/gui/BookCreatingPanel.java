@@ -112,7 +112,7 @@ public class BookCreatingPanel extends Panel {
             throw ex;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Undefined failure in file creation.", ex);
-        } 
+        }
         // number of chapters with taking into account crawlingValues
         int numberOfChapters = (chapters != null) ? chapters.size()
                 : (!crawlingValues[1].isEmpty()) ? new Integer(crawlingValues[1]) : 0; // if empty than user wants all
@@ -170,7 +170,7 @@ public class BookCreatingPanel extends Panel {
                 final ChapterRetriever wcr = new ChapterRetriever();
                 int successCounter = 0, failureCounter = 0;
                 String resultDescription;
-                // here we have decicions: for each selected chapter or crawl through chapters
+                // here we have decisions: for each selected chapter or crawl through chapters
                 // until there is no next chapter or maximum amount of chapters received.
                 if (chapters != null) { // toc or range
                     for (Chapter wc : chapters) {
@@ -204,7 +204,7 @@ public class BookCreatingPanel extends Panel {
                             crawlingValues[0]);
                     do {
                         try { // TODO: {Vordis 2019-05-20 21:00:15} repetition
-                            // get chapterText and title
+                              // get chapterText and title
                             chapterValues = wcr.retrieveChapterCrawling(nextChapter);
                             try {
                                 // save them into file depending on user choice(txt, epub or pdf)
@@ -214,19 +214,20 @@ public class BookCreatingPanel extends Panel {
                                 resultDescription = chapterValues[0] + strings.book_creating_list_success_entry
                                         + chapterValues[1].length();
                                 bookSizeInCharacters += chapterValues[1].length() + chapterValues[0].length();
-                            } catch (Exception ex) { // soft crash - unable to save one of chapters it does not mean
+                            } catch (Throwable ex) { // soft crash - unable to save one of chapters it does not mean
                                                      // that we have to abort operation.
                                 failureCounter++;
                                 resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
                                         + ex.getMessage();
-                                LOGGER.log(Level.SEVERE, "Chapter failure.", e);
+                                LOGGER.log(Level.SEVERE, "Chapter failure.", ex);
                             }
-                        } catch (Exception e) { // hard crash - unable to get values for chapter from web, on crawling
+                        } catch (Throwable e) { // hard crash - unable to get values for chapter from web, on crawling
                                                 // it means that we have to abort operation.
                             resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
                                     + e.getMessage();
                             // make sure that loop will break after publishing results
                             chapterValues = new String[] { null, null, null };
+                            LOGGER.log(Level.SEVERE, "Chapter failure.", e);
                         }
                         // publish results
                         publish(successCounter, failureCounter, resultDescription);
