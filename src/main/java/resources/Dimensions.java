@@ -30,7 +30,7 @@ package resources;
  *
  * @author marcin
  */
-public abstract class Dimensions {
+public final class Dimensions {
 
     public static final int FRAME_WIDTH = 800, FRAME_HEIGHT = 600, PROGRESS_BAR_WIDTH = 400, PROGRESS_BAR_HEIGHT = 125;
 }

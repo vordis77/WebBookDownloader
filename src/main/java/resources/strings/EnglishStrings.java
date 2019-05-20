@@ -30,7 +30,7 @@ package resources.strings;
  *
  * @author marcin
  */
-public class EnglishStrings extends Strings {
+public final class EnglishStrings extends Strings {
 
     public EnglishStrings() {
         super("Error", "WebBookDownloader", "Program", "Help", "Close", "About program",

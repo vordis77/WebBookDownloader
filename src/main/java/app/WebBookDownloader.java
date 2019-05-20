@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
@@ -49,6 +51,8 @@ import resources.strings.PolishStrings;
  */
 public class WebBookDownloader {
 
+    private final static Logger LOGGER = Logger.getLogger(WebBookDownloader.class.getName()); // TODO: {Vordis 2019-05-20 20:15:49} ugly, think about some injection
+
     /**
      * Use this field to handle basic interaction between user and interface.
      */
@@ -60,10 +64,12 @@ public class WebBookDownloader {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         // load settings
         try {
             loadSettings();
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.WARNING, "Settings file not found.", e);
         }
 
         // create corresponding to language Strings instance
@@ -111,7 +117,7 @@ public class WebBookDownloader {
                 // pdf font name
                 Settings.pdfFontFile = scan.next();
             } catch (Exception e) { // if data invalid do nothing, settings have default values
-                System.err.println(e.toString());
+                LOGGER.log(Level.SEVERE, "Failed to load settings.", e);
             }
         }
     }
@@ -121,6 +127,8 @@ public class WebBookDownloader {
             fw.append(Settings.programLanguage + "\n" + Settings.fileType + "\n" + Settings.chapterParagraphContainer
                     + "\n" + Settings.encoding + "\n" + Settings.pdfFontFile);
             fw.flush();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to save settings.", e);
         }
     }
 

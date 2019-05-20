@@ -34,7 +34,7 @@ import resources.strings.Strings;
  * 
  * @author marcin
  */
-public abstract class Settings {
+public final class Settings {
         public static final int LANGUAGE_ENGLISH = 0, LANGUAGE_POLISH = 1, FILE_TXT = 0, FILE_EPUB = 1, FILE_PDF = 2;
 
         /**

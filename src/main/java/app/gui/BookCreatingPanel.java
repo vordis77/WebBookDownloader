@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -68,6 +71,10 @@ public class BookCreatingPanel extends Panel {
     private final ChapterSelectingPanel parentPanel;
     private boolean taskCancelled = false;
     private final String[] crawlingValues;
+    private final static Logger LOGGER = Logger.getLogger(BookCreatingPanel.class.getName()); // TODO: {Vordis
+                                                                                              // 2019-05-20 20:15:49}
+                                                                                              // ugly, think about some
+                                                                                              // injection
 
     /**
      * Create new instance of book creating panel.
@@ -103,7 +110,9 @@ public class BookCreatingPanel extends Panel {
             WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
                     strings.dialog_invalid_filename_message);
             throw ex;
-        }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Undefined failure in file creation.", ex);
+        } 
         // number of chapters with taking into account crawlingValues
         int numberOfChapters = (chapters != null) ? chapters.size()
                 : (!crawlingValues[1].isEmpty()) ? new Integer(crawlingValues[1]) : 0; // if empty than user wants all
@@ -175,10 +184,11 @@ public class BookCreatingPanel extends Panel {
                             resultDescription = chapterValues[0] + strings.book_creating_list_success_entry
                                     + chapterValues[1].length();
                             bookSizeInCharacters += chapterValues[1].length() + chapterValues[0].length();
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             failureCounter++;
                             resultDescription = strings.book_creating_list_failure_entry + wc.getAddress() + " -> "
                                     + e.getMessage();
+                            LOGGER.log(Level.SEVERE, "Chapter failure.", e);
                         }
                         // publish results
                         publish(successCounter, failureCounter, resultDescription);
@@ -193,7 +203,7 @@ public class BookCreatingPanel extends Panel {
                     wcr.initializeCrawling(crawlingValues[1].isEmpty() ? null : new Integer(crawlingValues[1]),
                             crawlingValues[0]);
                     do {
-                        try {
+                        try { // TODO: {Vordis 2019-05-20 21:00:15} repetition
                             // get chapterText and title
                             chapterValues = wcr.retrieveChapterCrawling(nextChapter);
                             try {
@@ -209,6 +219,7 @@ public class BookCreatingPanel extends Panel {
                                 failureCounter++;
                                 resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
                                         + ex.getMessage();
+                                LOGGER.log(Level.SEVERE, "Chapter failure.", e);
                             }
                         } catch (Exception e) { // hard crash - unable to get values for chapter from web, on crawling
                                                 // it means that we have to abort operation.
@@ -253,6 +264,7 @@ public class BookCreatingPanel extends Panel {
                 try {
                     fs.closeFile();
                 } catch (IOException ex) {
+                    LOGGER.log(Level.SEVERE, "Failed to close book file.", ex);
                     // ignore, we dont care that much about this operation success.
                 }
 

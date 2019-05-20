@@ -30,7 +30,7 @@ package resources.strings;
  *
  * @author marcin
  */
-public class PolishStrings extends Strings {
+public final class PolishStrings extends Strings {
 
     public PolishStrings() {
         super("Blad", "WebBookDownloader", "Program", "Pomoc", "Zamknij", "O programie",

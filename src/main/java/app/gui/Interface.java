@@ -85,7 +85,7 @@ public class Interface {
                 aboutProgramItem = new JMenuItem(strings.menu_help_about_program_item);
         // menu items listeners
         closeItem.addActionListener((ActionEvent e) -> {
-            // close progrma
+            // close program
             System.exit(0);
         });
         settingsItem.addActionListener((ActionEvent e) -> {

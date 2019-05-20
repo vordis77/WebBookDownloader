@@ -46,14 +46,20 @@ public class ChapterRetriever {
      * @return string[2] where [0] - chapterTitle, [1] - chapterText;
      * @throws IOException if unable to connect website.
      */
-    public String[] retrieveChapter(String address) throws IOException {
+    public String[] retrieveChapter(String address) throws Exception {
         // get html of the chapter site
         final String html = Driver.readSite(address);
         // return chapter in form of table: 0 - title, 1 - text
         return new String[] { getChapterTitle(html), getChapterText(html) };
     }
 
-    private String getChapterText(String document) {
+    /**
+     * 
+     * @param document
+     * @return
+     * @throws Exception
+     */
+    private String getChapterText(String document) throws Exception {
         int size = 0, chapterTextBlockStartIndex, chapterTextBlockEndIndex = 0, divTagCount, index, newSize;
         int[] blockBounds = new int[2];
         // go over blocks with paragraphs, get one with the biggest size of text(parse
@@ -111,7 +117,7 @@ public class ChapterRetriever {
         return chapterText;
     }
 
-    private String getChapterTitle(String document) {
+    private String getChapterTitle(String document) throws Exception {
         // cut beginning of document - start with title tag
         document = document.substring(document.indexOf("<title>"));
         String title = document.substring(7, document.indexOf("</title>"));
@@ -139,7 +145,7 @@ public class ChapterRetriever {
 
     }
 
-    public void initializeCrawling(Integer numberOfChapters, String nextLinkName) {
+    public void initializeCrawling(Integer numberOfChapters, String nextLinkName) throws Exception {
         if (numberOfChapters != null) {
             crawlingCounter = numberOfChapters - 1;
         } // -1 because we have + 1 because of way of reading - chapter is read than we
@@ -154,7 +160,7 @@ public class ChapterRetriever {
      * @return [0] - chapter title; [1] - chapter text; [2] - next chapter address
      * @throws java.io.IOException if error in conection
      */
-    public String[] retrieveChapterCrawling(String address) throws IOException {
+    public String[] retrieveChapterCrawling(String address) throws Exception {
         // get html of the chapter site
         final String html = Driver.readSite(address);
         // return chapter in form of table: 0 - title, 1 - text, 2 - next chapter
@@ -162,7 +168,7 @@ public class ChapterRetriever {
         return new String[] { getChapterTitle(html), getChapterText(html), getNextChapterAddress(html, address) };
     }
 
-    private String getNextChapterAddress(String document, String chapterAbsoluteAddress) {
+    private String getNextChapterAddress(String document, String chapterAbsoluteAddress) throws Exception {
         if (crawlingCounter == null || crawlingCounter > 0) { // > 0 - user friendly no 0 index. check if we don't
                                                               // exceed number of chapters specified by user or counter
                                                               // is unspecified meaning that we crawl to the end.
@@ -174,19 +180,8 @@ public class ChapterRetriever {
                 return null;
             }
             int indexOfLinkStart = document.lastIndexOf("href=", indexOfName),
-                    indexOfLinkEnd = document.indexOf(document.charAt(indexOfLinkStart + 5), indexOfLinkStart + 6); // end
-                                                                                                                    // -
-                                                                                                                    // find
-                                                                                                                    // char
-                                                                                                                    // which
-                                                                                                                    // is
-                                                                                                                    // bracket
-                                                                                                                    // of
-                                                                                                                    // link
-                                                                                                                    // than
-                                                                                                                    // find
-                                                                                                                    // it
-                                                                                                                    // counterpart.
+                    // end - find char which is bracket of link than find it counterpart.
+                    indexOfLinkEnd = document.indexOf(document.charAt(indexOfLinkStart + 5), indexOfLinkStart + 6);
             if (indexOfLinkStart != -1 && indexOfLinkEnd != -1) { // if indexes ok - all was found properly
                 String link = document.substring(indexOfLinkStart + 6, indexOfLinkEnd);
                 // check if link is absolute if not fix it.

@@ -26,6 +26,9 @@
 package app.gui.components;
 
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -38,6 +41,9 @@ import app.WebBookDownloader;
  * @author marcin
  */
 public abstract class Panel extends JPanel {
+
+    private final static Logger LOGGER = Logger.getLogger(Panel.class.getName()); // TODO: {Vordis 2019-05-20 20:15:49}
+                                                                                  // ugly, think about some injection
 
     public Panel() {
         super();
@@ -67,7 +73,7 @@ public abstract class Panel extends JPanel {
             WebBookDownloader.gui.changePanel(this);
         } catch (Exception e) {
             // do not show panel
-            System.err.println(e);
+            LOGGER.log(Level.SEVERE, "Failed to show panel.", e);
         }
     }
 
