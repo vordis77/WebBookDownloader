@@ -112,7 +112,7 @@ public class Interface {
 
             // container
             final JComponent[] components = new JComponent[] { new JLabel(strings.settings_note),
-                    new JLabel(strings.setings_language), languageBox, new JLabel(strings.settings_format), bookTypeBox,
+                    new JLabel(strings.settings_language), languageBox, new JLabel(strings.settings_format), bookTypeBox,
                     new JLabel(strings.settings_html_element), htmlElementBox,
                     new JLabel(strings.settings_website_encoding), encodingBox, new JLabel(strings.settings_pdf_font),
                     fontBox };
@@ -134,7 +134,7 @@ public class Interface {
             }
         });
         aboutProgramItem.addActionListener((ActionEvent e) -> {
-            // show dialog with informations about program
+            // show dialog with information about program
             showInformationDialog(strings.menu_help_about_program_item, strings.about_program_message);
         });
 
@@ -172,7 +172,7 @@ public class Interface {
     }
 
     /**
-     * Get main fram of the program.
+     * Get main frame of the program.
      *
      * @return main frame.
      */

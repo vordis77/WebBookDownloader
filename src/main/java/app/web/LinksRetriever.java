@@ -38,7 +38,8 @@ import org.jsoup.Jsoup;
  */
 public class LinksRetriever {
 
-    private final String encoding = "UTF-8";
+    // private final String encoding = "UTF-8"; // TODO: {Vordis 2019-05-23
+    // 19:30:45} not used check why
     private String bookTitle = "";
 
     /**
@@ -46,7 +47,7 @@ public class LinksRetriever {
      *
      * @param tocAddress table of contents address.
      * @return list of chapters.
-     * @throws java.io.IOException if problem occured, when reading from site or
+     * @throws java.io.IOException if problem occurred, when reading from site or
      *                             address is invalid - check if its instance of
      *                             MalformedURLException.
      */
@@ -65,7 +66,7 @@ public class LinksRetriever {
             // get link char
             linkChar = siteCode.charAt(index + 5); // first character after '='
             // put caret on linkChar
-            caret = index + 6; // remember that index is on the begining on word(href)
+            caret = index + 6; // remember that index is on the beginning on word(href)
             // get chapterLink
             chapterLink = siteCode.substring(caret, siteCode.indexOf(linkChar, caret)); // -1 because caret is on first
                                                                                         // char after linkChar
@@ -83,14 +84,14 @@ public class LinksRetriever {
 
             // get chapter title
             caret = siteCode.indexOf(">", caret); // put caret on end of html element
-            index = siteCode.indexOf("<", caret); // put index on begining of next html element, if we have link with
+            index = siteCode.indexOf("<", caret); // put index on beginning of next html element, if we have link with
                                                   // description between those two elements lays description.
             if (index == -1) {
                 break; // end of html, also html is probably broken, it should not end with link
             }
             chapterTitle = siteCode.substring(caret + 1, index); // get from first char after end of link element
                                                                  // inclusive to first char of next element exclusive
-            if (chapterTitle.length() > 1) { // empty doesnt work, changed to length > 1 char.
+            if (chapterTitle.length() > 1) { // empty doesn't work, changed to length > 1 char.
                 // add chapter if description is not empty, if description is empty we dont want
                 // this link probably.
                 // parse chapter title for any html codes
@@ -137,7 +138,8 @@ public class LinksRetriever {
      */
     public ArrayList<Chapter> getChaptersFromRange(String startAddress, String endAddress) {
         final ArrayList<Chapter> chapterList = new ArrayList<>();
-        // find numbers in both adresses, then increment last number from first until it
+        // find numbers in both addresses, then increment last number from first until
+        // it
         // gets the same value as number from last.
         String tempString = startAddress;
         tempString = tempString.replaceAll("[^0-9]+", " ");
@@ -146,11 +148,13 @@ public class LinksRetriever {
         tempString = tempString.replaceAll("[^0-9]+", " ");
         String[] endNumbers = tempString.trim().split(" ");
         String numberString;
-        // for convenience store startNumber in tempSTring
+        // for convenience store startNumber in tempString
         tempString = startNumbers[startNumbers.length - 1];
         int indexOfNumber = startAddress.lastIndexOf(tempString);
-        for (int i = new Integer(tempString); i <= new Integer(endNumbers[endNumbers.length - 1]); i++) { // go over all
-                                                                                                          // elements
+        for (int i = Integer.valueOf(tempString); i <= Integer.valueOf(endNumbers[endNumbers.length - 1]); i++) { // go
+                                                                                                                  // over
+                                                                                                                  // all
+            // elements
             numberString = Integer.toString(i);
             for (int j = 0; j < tempString.length() - Integer.toString(i).length(); j++) { // new number is lower than
                                                                                            // basic, it means basic

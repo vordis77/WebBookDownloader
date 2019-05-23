@@ -42,6 +42,7 @@ import app.WebBookDownloader;
  */
 public abstract class Panel extends JPanel {
 
+    private static final long serialVersionUID = 2422371016690558035L;
     private final static Logger LOGGER = Logger.getLogger(Panel.class.getName()); // TODO: {Vordis 2019-05-20 20:15:49}
                                                                                   // ugly, think about some injection
 
@@ -59,7 +60,7 @@ public abstract class Panel extends JPanel {
     /**
      * Add components to panel in this method.
      * 
-     * @throws java.lang.Exception exception if fatal error occured while building
+     * @throws java.lang.Exception exception if fatal error occurred while building
      *                             panel.
      */
     public abstract void initializePanel() throws Exception;

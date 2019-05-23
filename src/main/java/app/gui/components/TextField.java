@@ -35,6 +35,8 @@ import javax.swing.JTextField;
  */
 public class TextField extends JTextField {
 
+    private static final long serialVersionUID = 7274862154094773024L;
+
     public TextField() {
         super();
     }
@@ -45,7 +47,7 @@ public class TextField extends JTextField {
 
     @Override
     public void doLayout() {
-        // before layout set max and prefered size
+        // before layout set max and preferred size
         super.setBackground(Color.black);
         super.setForeground(Color.white); // font
         super.setMaximumSize(new Dimension(700, 30));

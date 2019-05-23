@@ -33,20 +33,20 @@ package resources.strings;
 public abstract class Strings {
     public final String errorDialogTitle, programTitle, menu_program_title, menu_help_title, menu_program_close_item,
             menu_help_about_program_item, about_program_message, range_choosing_tab1, range_choosing_tab2,
-            range_choosing_tab3, range_choosing_index_adress, range_choosing_adress_start, range_choosing_adress_end,
+            range_choosing_tab3, range_choosing_index_address, range_choosing_address_start, range_choosing_address_end,
             range_choosing_number_of_chapters, range_choosing_confirm_button, dialog_invalid_address_message,
             dialog_io_error_message, dialog_chapter_selection_title, dialog_progress_title, dialog_file_create,
             book_creating_chapters_success, book_creating_chapters_failure, book_creating_chapters_total,
             book_creating_button_cancel, book_creating_button_back, dialog_no_chapter_selected_message,
             dialog_invalid_filename_message, book_creating_list_success_entry, book_creating_list_failure_entry,
-            dialog_book_creating_raport_title, dialog_book_creating_raport_message,
-            range_choosing_next_chapter_link_name, menu_program_settings_item, settings_note, setings_language,
+            dialog_book_creating_report_title, dialog_book_creating_report_message,
+            range_choosing_next_chapter_link_name, menu_program_settings_item, settings_note, settings_language,
             settings_format, settings_html_element, settings_website_encoding, settings_pdf_font;
 
     public Strings(String errorDialogTitle, String programTitle, String menu_program_title, String menu_help_title,
             String menu_program_close_item, String menu_help_about_program_item, String about_program_message,
             String range_choosing_tab1, String range_choosing_tab2, String range_choosing_tab3,
-            String range_choosing_index_adress, String range_choosing_adress_start, String range_choosing_adress_end,
+            String range_choosing_index_address, String range_choosing_address_start, String range_choosing_address_end,
             String range_choosing_number_of_chapters, String range_choosing_confirm_button,
             String dialog_invalid_address_message, String dialog_io_error_message,
             String dialog_chapter_selection_title, String dialog_progress_title, String dialog_file_create,
@@ -54,9 +54,9 @@ public abstract class Strings {
             String book_creating_chapters_total, String book_creating_button_cancel, String book_creating_button_back,
             String dialog_no_chapter_selected_message, String dialog_invalid_filename_message,
             String book_creating_list_success_entry, String book_creating_list_failure_entry,
-            String dialog_book_creating_raport_title, String dialog_book_creating_raport_message,
+            String dialog_book_creating_report_title, String dialog_book_creating_report_message,
             String range_choosing_next_chapter_link_name, String menu_program_settings_item, String settings_note,
-            String setings_language, String settings_format, String settings_html_element,
+            String settings_language, String settings_format, String settings_html_element,
             String settings_website_encoding, String settings_pdf_font) {
         this.errorDialogTitle = errorDialogTitle;
         this.programTitle = programTitle;
@@ -68,9 +68,9 @@ public abstract class Strings {
         this.range_choosing_tab1 = range_choosing_tab1;
         this.range_choosing_tab2 = range_choosing_tab2;
         this.range_choosing_tab3 = range_choosing_tab3;
-        this.range_choosing_index_adress = range_choosing_index_adress;
-        this.range_choosing_adress_start = range_choosing_adress_start;
-        this.range_choosing_adress_end = range_choosing_adress_end;
+        this.range_choosing_index_address = range_choosing_index_address;
+        this.range_choosing_address_start = range_choosing_address_start;
+        this.range_choosing_address_end = range_choosing_address_end;
         this.range_choosing_number_of_chapters = range_choosing_number_of_chapters;
         this.range_choosing_confirm_button = range_choosing_confirm_button;
         this.dialog_invalid_address_message = dialog_invalid_address_message;
@@ -87,12 +87,12 @@ public abstract class Strings {
         this.dialog_invalid_filename_message = dialog_invalid_filename_message;
         this.book_creating_list_success_entry = book_creating_list_success_entry;
         this.book_creating_list_failure_entry = book_creating_list_failure_entry;
-        this.dialog_book_creating_raport_title = dialog_book_creating_raport_title;
-        this.dialog_book_creating_raport_message = dialog_book_creating_raport_message;
+        this.dialog_book_creating_report_title = dialog_book_creating_report_title;
+        this.dialog_book_creating_report_message = dialog_book_creating_report_message;
         this.range_choosing_next_chapter_link_name = range_choosing_next_chapter_link_name;
         this.menu_program_settings_item = menu_program_settings_item;
         this.settings_note = settings_note;
-        this.setings_language = setings_language;
+        this.settings_language = settings_language;
         this.settings_format = settings_format;
         this.settings_html_element = settings_html_element;
         this.settings_website_encoding = settings_website_encoding;

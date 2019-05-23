@@ -35,13 +35,15 @@ import javax.swing.JButton;
  */
 public class Button extends JButton {
 
+    private static final long serialVersionUID = -5981112479545665978L;
+
     public Button(String contents) {
         super(contents);
     }
 
     @Override
     public void doLayout() {
-        // before layout set max and prefered size
+        // before layout set max and preferred size
         super.setBackground(Color.black);
         super.setForeground(Color.white); // font
         super.doLayout();

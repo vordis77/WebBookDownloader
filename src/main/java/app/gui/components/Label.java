@@ -35,13 +35,15 @@ import javax.swing.JLabel;
  */
 public class Label extends JLabel {
 
+    private static final long serialVersionUID = 1386166330339061776L;
+
     public Label(String content) {
         super(content);
     }
 
     @Override
     public void doLayout() {
-        // before layout set max and prefered size
+        // before layout set max and preferred size
         super.setForeground(Color.white); // font
         super.doLayout();
     }

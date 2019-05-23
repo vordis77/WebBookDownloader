@@ -115,8 +115,9 @@ public class BookCreatingPanel extends Panel {
         }
         // number of chapters with taking into account crawlingValues
         int numberOfChapters = (chapters != null) ? chapters.size()
-                : (!crawlingValues[1].isEmpty()) ? new Integer(crawlingValues[1]) : 0; // if empty than user wants all
-                                                                                       // chapters in crawling
+                : (!crawlingValues[1].isEmpty()) ? Integer.valueOf(crawlingValues[1]) : 0; // if empty than user wants
+                                                                                           // all
+        // chapters in crawling
 
         // components
         final Label chaptersSuccessTextLabel = new Label(strings.book_creating_chapters_success),
@@ -126,19 +127,21 @@ public class BookCreatingPanel extends Panel {
                 chaptersTotalTextLabel = new Label(strings.book_creating_chapters_total),
                 chaptersTotalValueLabel = new Label(String.valueOf(numberOfChapters));
         final JProgressBar progressBar = new JProgressBar(0, numberOfChapters);
-        // if crawling with unspecified number use ambigous progress bar
+        // if crawling with unspecified number use ambiguous progress bar
         if (numberOfChapters == 0) {
             progressBar.setIndeterminate(true);
         }
         progressBar.setStringPainted(true);
         final Button cancelButton = new Button(strings.book_creating_button_cancel),
                 backButton = new Button(strings.book_creating_button_back);
-        final JList progressDetails = new JList(new DefaultListModel());
+        final JList<Object> progressDetails = new JList<Object>(new DefaultListModel<Object>());
         // cell renderer - set color of font for success and error, based on assumption
         // that chapter name doesn't contain :// character
         progressDetails.setCellRenderer(new DefaultListCellRenderer() {
+            private static final long serialVersionUID = -8147757033069789714L;
+
             @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
                     boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
                         cellHasFocus);
@@ -153,7 +156,7 @@ public class BookCreatingPanel extends Panel {
         });
         final JScrollPane progressDetailsContainer = new JScrollPane(progressDetails);
         // disable back button on default - before operation ended or user cancelled
-        // back button shall be unavaible
+        // back button shall be unavailable
         backButton.setEnabled(false);
 
         // swing worker - async task that will create book in background
@@ -200,7 +203,7 @@ public class BookCreatingPanel extends Panel {
                 } else { // crawling
                     String nextChapter = crawlingValues[2];
                     // initialize crawling
-                    wcr.initializeCrawling(crawlingValues[1].isEmpty() ? null : new Integer(crawlingValues[1]),
+                    wcr.initializeCrawling(crawlingValues[1].isEmpty() ? null : Integer.valueOf(crawlingValues[1]),
                             crawlingValues[0]);
                     do {
                         try { // TODO: {Vordis 2019-05-20 21:00:15} repetition
@@ -249,15 +252,15 @@ public class BookCreatingPanel extends Panel {
                 chaptersSuccessValueLabel.setText(chunks.get(0).toString());
                 chaptersFailureValueLabel.setText(chunks.get(1).toString());
                 // update list on success chapter title + number of characters, on failure
-                // chapter address and exeption message.
-                ((DefaultListModel) progressDetails.getModel()).addElement(chunks.get(2));
+                // chapter address and exception message.
+                ((DefaultListModel<Object>) progressDetails.getModel()).addElement(chunks.get(2));
             }
 
             @Override
             protected void done() {
-                // show finish message and raport
-                WebBookDownloader.gui.showInformationDialog(strings.dialog_book_creating_raport_title,
-                        strings.dialog_book_creating_raport_message + bookSizeInCharacters);
+                // show finish message and report
+                WebBookDownloader.gui.showInformationDialog(strings.dialog_book_creating_report_title,
+                        strings.dialog_book_creating_report_message + bookSizeInCharacters);
                 // disable cancel button, enable back button
                 backButton.setEnabled(true);
                 cancelButton.setEnabled(false);

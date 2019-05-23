@@ -83,8 +83,8 @@ public class ChapterRetriever {
                                                             // useless piece of text
                     break;
                 }
-                // check if tag is ending or begining
-                if (document.charAt(index - 1) == '<') { // begining tag
+                // check if tag is ending or beginning
+                if (document.charAt(index - 1) == '<') { // beginning tag
                     divTagCount++;
                 } else if (document.charAt(index - 1) == '/') { // ending tag
                     divTagCount--;
@@ -92,7 +92,7 @@ public class ChapterRetriever {
                 // pass tag length to index, so we will find next, not the same
                 index += 4;
             }
-            // if chapter paragraph contaiener is <br then we need to use parent index as
+            // if chapter paragraph container is <br then we need to use parent index as
             // start
             if (Settings.chapterParagraphContainer.equals("<br")) {
                 chapterTextBlockStartIndex = document.lastIndexOf("<div", chapterTextBlockStartIndex);
@@ -139,7 +139,7 @@ public class ChapterRetriever {
             while (title.charAt(title.length() - index) == lastChapterTitle.charAt(lastChapterTitle.length() - index)) {
                 index++;
             }
-            index = title.length() - index + 1; // remember that right paranthesis is exclusive, so we need to add 1
+            index = title.length() - index + 1; // remember that right parenthesis is exclusive, so we need to add 1
             return title.substring(0, index);
         }
 
@@ -154,11 +154,11 @@ public class ChapterRetriever {
     }
 
     /**
-     * Retrieve chapter valeus from website by crawling.
+     * Retrieve chapter values from website by crawling.
      *
      * @param address address of the website.
      * @return [0] - chapter title; [1] - chapter text; [2] - next chapter address
-     * @throws java.io.IOException if error in conection
+     * @throws java.io.IOException if error in connection
      */
     public String[] retrieveChapterCrawling(String address) throws Exception {
         // get html of the chapter site
@@ -188,16 +188,17 @@ public class ChapterRetriever {
                 if (!link.contains("://")) {
                     // we have full address to previous chapter, but we need only part of it.
                     // new way - find position of local link first address part in absolute, if it
-                    // doesnt exist concate whole links.
+                    // doesn't exist concatenate whole links.
                     int localPartEnd = link.indexOf('/', 1); // get first slash - delimiting first folder in path, if
-                                                             // there isn't one just concate with absolute - last path
+                                                             // there isn't one just concatenate with absolute - last
+                                                             // path
                     int absoluteEnd;
                     if (localPartEnd > -1) {
                         absoluteEnd = chapterAbsoluteAddress.indexOf(link.substring(0, localPartEnd));
                         if (absoluteEnd < 0) { // if index was not found just set index to end of string
                             absoluteEnd = chapterAbsoluteAddress.length() - 1;
                         }
-                    } else { // local is minimised - concate with absolute - last part
+                    } else { // local is minimized - concatenated with absolute - last part
                         absoluteEnd = chapterAbsoluteAddress.lastIndexOf('/') + 1; // slash inclusive
                     }
 

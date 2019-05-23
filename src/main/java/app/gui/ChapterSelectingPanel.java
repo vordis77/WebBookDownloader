@@ -61,6 +61,7 @@ import app.WebBookDownloader;
  */
 public class ChapterSelectingPanel extends Panel {
 
+    private static final long serialVersionUID = -5679451016067185376L;
     private final LinksRetriever wlr;
     private final Strings strings;
 
@@ -77,15 +78,15 @@ public class ChapterSelectingPanel extends Panel {
                 rangeEndAddressText = new TextField(), startAddressText = new TextField(),
                 numberOfChaptersText = new TextField(), nextChapterLinkNameText = new TextField("Next Chapter");
         tabbedPane.addTab(strings.range_choosing_tab1, createHorizontallyCenteredComponent(
-                new JComponent[] { new Label(strings.range_choosing_index_adress), indexAddressText }));
+                new JComponent[] { new Label(strings.range_choosing_index_address), indexAddressText }));
         tabbedPane.addTab(strings.range_choosing_tab2, createVerticallyCenteredComponent(new JComponent[] {
                 createHorizontallyCenteredComponent(
-                        new JComponent[] { new Label(strings.range_choosing_adress_start), rangeStartAddressText }),
+                        new JComponent[] { new Label(strings.range_choosing_address_start), rangeStartAddressText }),
                 createHorizontallyCenteredComponent(
-                        new JComponent[] { new Label(strings.range_choosing_adress_end), rangeEndAddressText }), }));
+                        new JComponent[] { new Label(strings.range_choosing_address_end), rangeEndAddressText }), }));
         tabbedPane.addTab(strings.range_choosing_tab3, createVerticallyCenteredComponent(new JComponent[] {
                 createHorizontallyCenteredComponent(
-                        new JComponent[] { new Label(strings.range_choosing_adress_start), startAddressText }),
+                        new JComponent[] { new Label(strings.range_choosing_address_start), startAddressText }),
                 createHorizontallyCenteredComponent(new JComponent[] {
                         new Label(strings.range_choosing_number_of_chapters), numberOfChaptersText }),
                 createHorizontallyCenteredComponent(new JComponent[] {
@@ -96,7 +97,7 @@ public class ChapterSelectingPanel extends Panel {
             if (tabbedPane.getSelectedIndex() == 2) { // if crawling go straight to next panel
                 askForFileNameAndProceedToBookCreatingPane(null, new String[] { nextChapterLinkNameText.getText(),
                         numberOfChaptersText.getText(), startAddressText.getText() });
-            } else { // craete progress bar when loading chapters, allow selection of chapters after
+            } else { // create progress bar when loading chapters, allow selection of chapters after
                      // loading commenced
                 final JProgressBar progressBar = new JProgressBar();
                 progressBar.setIndeterminate(true);
@@ -159,13 +160,13 @@ public class ChapterSelectingPanel extends Panel {
 
     private void confirmChaptersAndGoToCreatingBookPanel(ArrayList<Chapter> chapters) {
         // check if chapters are not empty and are not null -- empty if not found links
-        // on site, null if any error occured while loading links
+        // on site, null if any error occurred while loading links
         if (chapters == null || chapters.isEmpty()) {
             return; // end prematurely
         }
         // components
         final Vector<Chapter> listContent = new Vector<>(chapters); // data
-        final JList chapterList = new JList(listContent);
+        final JList<Chapter> chapterList = new JList<Chapter>(listContent);
         final JScrollPane listContainer = new JScrollPane(chapterList);
         listContainer.setPreferredSize(new Dimension(Dimensions.FRAME_WIDTH, Dimensions.FRAME_HEIGHT));
         // show list in dialog
@@ -173,7 +174,7 @@ public class ChapterSelectingPanel extends Panel {
                 strings.dialog_chapter_selection_title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             // user confirmed - get selected chapters and open chapter crawlingPanel with
             // them
-            final ArrayList<Chapter> selectedChapters = new ArrayList<>(chapterList.getSelectedValuesList());
+            final ArrayList<Chapter> selectedChapters = new ArrayList<Chapter>(chapterList.getSelectedValuesList());
             // check if user selected chapters
             if (selectedChapters.isEmpty()) {
                 WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
