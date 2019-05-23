@@ -50,7 +50,7 @@ import resources.Settings;
  *
  * @author marcin
  */
-public class FileSaver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete savers
+public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete savers
 
     private final String filePath, encoding;
     private PrintWriter pw;
@@ -65,7 +65,7 @@ public class FileSaver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into conc
      * @param fileName absolute path of the file.
      * @param encoding encoding of the file.
      */
-    public FileSaver(String fileName, String encoding) {
+    public Saver(String fileName, String encoding) {
         this.filePath = fileName;
         this.encoding = encoding;
     }

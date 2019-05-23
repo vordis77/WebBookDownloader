@@ -47,7 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import resources.Settings;
 import resources.strings.Strings;
-import app.file.FileSaver;
+import app.file.Saver;
 import app.gui.components.Button;
 import app.gui.components.Label;
 import app.gui.components.Panel;
@@ -100,7 +100,7 @@ public class BookCreatingPanel extends Panel {
     @Override
     public void initializePanel() throws Exception {
         // first of all try to create file, if failure back to parent panel
-        final FileSaver fs = new FileSaver(fileName, Settings.encoding);
+        final Saver fs = new Saver(fileName, Settings.encoding);
         try {
             fs.createFile();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) { // it should not occur with fileDialog but
