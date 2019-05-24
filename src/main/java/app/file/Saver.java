@@ -71,6 +71,24 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
     }
 
     /**
+     * Get title for the ebook.
+     * 
+     * @return string ebook title.
+     */
+    private String getBookTitle() {
+        // generate ebook title based on file name - find text between last slash and
+        // dot.
+        final int rangeStart = filePath.lastIndexOf(File.separatorChar), rangeEnd = filePath.lastIndexOf('.');
+
+        // return only if ranges are valid (were found)
+        if (rangeStart != -1 && rangeEnd != -1) {
+            return filePath.substring(rangeStart + 1, rangeEnd); // + 1 for exclusion of slash.
+        }
+
+        return "Untitled";
+    }
+
+    /**
      * Creates file. Epub have default encoding - utf-8, but it should be ok.
      *
      * @throws FileNotFoundException        if path is invalid.
@@ -81,7 +99,7 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
         case Settings.FILE_EPUB:
             ebook = new Book();
             // Set the title
-            ebook.getMetadata().addTitle(filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.')));
+            ebook.getMetadata().addTitle(getBookTitle());
             // Add an Author
             ebook.getMetadata().addAuthor(new Author("WebBookDownloader"));
             break;
@@ -91,8 +109,7 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
             // Setting the author of the document
             document.getDocumentInformation().setAuthor("WebBookDownloader");
             // Setting the title of the document
-            document.getDocumentInformation()
-                    .setTitle(filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.')));
+            document.getDocumentInformation().setTitle(getBookTitle());
             // content handler
             ppw = new PDFPageWriter(document);
             // compute true text width based on used font

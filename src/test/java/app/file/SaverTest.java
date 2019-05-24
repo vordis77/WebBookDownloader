@@ -63,6 +63,48 @@ public class SaverTest {
     }
 
     /**
+     * Test epub saving.
+     * @throws Throwable if any error or exception occured in test.
+     */
+    @Test
+    public void testEpubSaver() throws Throwable {
+        // set fileType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
+        Settings.fileType = Settings.FILE_EPUB;
+        saver.createFile();
+        // save all dummy data into file
+        for (String[] chapter : DUMMY_CHAPTERS) {
+            saver.saveToFile(chapter);
+        }
+        saver.closeFile();
+        // now, we need to check that file exists and at least is not empty
+        // best would be to compare saved data (read file) with the one in memory
+        file = new File(FILE_NAME);
+        assertTrue(file.exists());
+        assertTrue(file.length() > 100); // it surely should have 100 chars
+    }
+
+    /**
+     * Test pdf saving.
+     * @throws Throwable if any error or exception occured in test.
+     */
+    @Test
+    public void testPDFSaver() throws Throwable {
+        // set fileType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
+        Settings.fileType = Settings.FILE_PDF;
+        saver.createFile();
+        // save all dummy data into file
+        for (String[] chapter : DUMMY_CHAPTERS) {
+            saver.saveToFile(chapter);
+        }
+        saver.closeFile();
+        // now, we need to check that file exists and at least is not empty
+        // best would be to compare saved data (read file) with the one in memory
+        file = new File(FILE_NAME);
+        assertTrue(file.exists());
+        assertTrue(file.length() > 100); // it surely should have 100 chars
+    }
+
+    /**
      * Clean after saver test.
      * @throws Throwable if any error or exception occured in test.
      */
