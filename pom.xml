@@ -16,10 +16,9 @@
             <artifactId>jsoup</artifactId>
             <version>1.12.1</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/nl.siegmann.epublib/epublib-core -->
+        
         <dependency>
-            <groupId>nl.siegmann.epublib</groupId>
+            <groupId>com.positiondev.epublib</groupId>
             <artifactId>epublib-core</artifactId>
             <version>3.1</version>
         </dependency>
