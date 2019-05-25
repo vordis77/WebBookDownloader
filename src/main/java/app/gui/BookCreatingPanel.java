@@ -71,10 +71,7 @@ public class BookCreatingPanel extends Panel {
     private final ChapterSelectingPanel parentPanel;
     private boolean taskCancelled = false;
     private final String[] crawlingValues;
-    private final static Logger LOGGER = Logger.getLogger(BookCreatingPanel.class.getName()); // TODO: {Vordis
-                                                                                              // 2019-05-20 20:15:49}
-                                                                                              // ugly, think about some
-                                                                                              // injection
+    private static final Logger LOGGER = Logger.getLogger(BookCreatingPanel.class.getName());
 
     /**
      * Create new instance of book creating panel.

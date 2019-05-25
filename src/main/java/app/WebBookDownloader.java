@@ -51,10 +51,7 @@ import resources.strings.PolishStrings;
  */
 public class WebBookDownloader {
 
-    private final static Logger LOGGER = Logger.getLogger(WebBookDownloader.class.getName()); // TODO: {Vordis
-                                                                                              // 2019-05-20 20:15:49}
-                                                                                              // ugly, think about some
-                                                                                              // injection
+    private static final Logger LOGGER = Logger.getLogger(WebBookDownloader.class.getName());
 
     /**
      * Use this field to handle basic interaction between user and interface.

@@ -43,8 +43,7 @@ import app.WebBookDownloader;
 public abstract class Panel extends JPanel {
 
     private static final long serialVersionUID = 2422371016690558035L;
-    private final static Logger LOGGER = Logger.getLogger(Panel.class.getName()); // TODO: {Vordis 2019-05-20 20:15:49}
-                                                                                  // ugly, think about some injection
+    public static final Logger LOGGER = Logger.getLogger(Panel.class.getName());
 
     public Panel() {
         super();

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+
 import resources.Settings;
 
 /**
@@ -36,7 +37,7 @@ import resources.Settings;
  * 
  * @author marcin
  */
-class Driver {
+final class Driver {
 
     /**
      * This method reads html site and returns it as html source.
