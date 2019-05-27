@@ -47,7 +47,7 @@ public final class EnglishStrings extends Strings {
                 "Operation finished, size of the book in characters: ", "Name of the link to next chapter: ",
                 "Settings", "Note that some changes will be only reflected after restart of program.", "Language: ",
                 "Format of book: ", "Html element, which contains paragraph in chapter website: ",
-                "Source website encoding: ", "Font file which will be used as font in pdf: ");
+                "Source website encoding: ", "Font file which will be used as font in pdf: ", "Titles at the end.");
     }
 
 }

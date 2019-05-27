@@ -72,6 +72,8 @@ public final class Settings {
                          * this elements will be assumed as block with chapter text.
                          */
                         chapterParagraphContainer = "<p";
+
+        public static boolean titleAtTheEnd = false;
         /**
          * Instance of strings resources. You can access fields in it for creating
          * interface.

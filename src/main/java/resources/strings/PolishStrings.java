@@ -47,7 +47,7 @@ public final class PolishStrings extends Strings {
                 "Raport", "Operacja zakonczona, rozmiar ksiazki w znakach: ", "Nazwa link'a do nastepnego rozdziału: ",
                 "Ustawienia", "Uwaga, niektore ustawienia beda aktywne dopiero po restarcie programu.", "Język: ",
                 "Format książki: ", "Element html, który zawiera akapity w rozdziale strony internetowej.",
-                "Kodowanie strony internetowej: ", "Plik z czcionką do pdf: ");
+                "Kodowanie strony internetowej: ", "Plik z czcionką do pdf: ", "Tytuły na końcu.");
     }
 
 }

@@ -114,6 +114,7 @@ public class WebBookDownloader {
                 }
                 // pdf font name
                 Settings.pdfFontFile = scan.next();
+                Settings.titleAtTheEnd = Boolean.valueOf(scan.next());
             } catch (Exception e) { // if data invalid do nothing, settings have default values
                 LOGGER.log(Level.SEVERE, "Failed to load settings.", e);
             }
@@ -123,7 +124,7 @@ public class WebBookDownloader {
     public static void saveSettings() throws IOException {
         try (FileWriter fw = new FileWriter(Settings.workingDirectoryPath.concat("settings.data"))) {
             fw.append(Settings.programLanguage + "\n" + Settings.fileType + "\n" + Settings.chapterParagraphContainer
-                    + "\n" + Settings.encoding + "\n" + Settings.pdfFontFile);
+                    + "\n" + Settings.encoding + "\n" + Settings.pdfFontFile + '\n' + Settings.titleAtTheEnd);
             fw.flush();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to save settings.", e);

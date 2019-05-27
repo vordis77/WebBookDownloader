@@ -41,7 +41,7 @@ public abstract class Strings {
             dialog_invalid_filename_message, book_creating_list_success_entry, book_creating_list_failure_entry,
             dialog_book_creating_report_title, dialog_book_creating_report_message,
             range_choosing_next_chapter_link_name, menu_program_settings_item, settings_note, settings_language,
-            settings_format, settings_html_element, settings_website_encoding, settings_pdf_font;
+            settings_format, settings_html_element, settings_website_encoding, settings_pdf_font, settings_title_at_the_end;
 
     public Strings(String errorDialogTitle, String programTitle, String menu_program_title, String menu_help_title,
             String menu_program_close_item, String menu_help_about_program_item, String about_program_message,
@@ -57,7 +57,7 @@ public abstract class Strings {
             String dialog_book_creating_report_title, String dialog_book_creating_report_message,
             String range_choosing_next_chapter_link_name, String menu_program_settings_item, String settings_note,
             String settings_language, String settings_format, String settings_html_element,
-            String settings_website_encoding, String settings_pdf_font) {
+            String settings_website_encoding, String settings_pdf_font, String settings_title_at_the_end) {
         this.errorDialogTitle = errorDialogTitle;
         this.programTitle = programTitle;
         this.menu_program_title = menu_program_title;
@@ -97,6 +97,7 @@ public abstract class Strings {
         this.settings_html_element = settings_html_element;
         this.settings_website_encoding = settings_website_encoding;
         this.settings_pdf_font = settings_pdf_font;
+        this.settings_title_at_the_end = settings_title_at_the_end;
     }
 
 }

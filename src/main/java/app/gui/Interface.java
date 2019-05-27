@@ -31,8 +31,12 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -53,6 +57,8 @@ import app.WebBookDownloader;
  * @author marcin
  */
 public class Interface {
+
+    private static final Logger LOGGER = Logger.getLogger(Interface.class.getName());
 
     private final JFrame programFrame;
     private final Strings strings = Settings.programStrings;
@@ -102,6 +108,9 @@ public class Interface {
             // font label + comboBox
             final JComboBox<Object> fontBox = new JComboBox<>(
                     new File(Settings.workingDirectoryPath.concat("fonts")).list());
+            // reverse title checkbox
+            final JCheckBox titleAtTheEndCheckBox = new JCheckBox(strings.settings_title_at_the_end);
+            titleAtTheEndCheckBox.setSelected(Settings.titleAtTheEnd);
 
             // select current values from global settings
             languageBox.setSelectedIndex(Settings.programLanguage);
@@ -112,10 +121,10 @@ public class Interface {
 
             // container
             final JComponent[] components = new JComponent[] { new JLabel(strings.settings_note),
-                    new JLabel(strings.settings_language), languageBox, new JLabel(strings.settings_format), bookTypeBox,
-                    new JLabel(strings.settings_html_element), htmlElementBox,
+                    new JLabel(strings.settings_language), languageBox, new JLabel(strings.settings_format),
+                    bookTypeBox, new JLabel(strings.settings_html_element), htmlElementBox,
                     new JLabel(strings.settings_website_encoding), encodingBox, new JLabel(strings.settings_pdf_font),
-                    fontBox };
+                    fontBox, titleAtTheEndCheckBox};
 
             if (JOptionPane.showConfirmDialog(programFrame, components, strings.menu_program_settings_item,
                     JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
@@ -125,11 +134,12 @@ public class Interface {
                 Settings.chapterParagraphContainer = htmlElementBox.getSelectedItem().toString();
                 Settings.encoding = encodingBox.getSelectedItem().toString();
                 Settings.pdfFontFile = fontBox.getSelectedItem().toString();
+                Settings.titleAtTheEnd = titleAtTheEndCheckBox.isSelected();
                 try {
                     // save to file
                     WebBookDownloader.saveSettings();
-                } catch (IOException ex) {
-                    // ignore
+                } catch (IOException exception) {
+                    LOGGER.log(Level.SEVERE, "Failed to save settings", exception);
                 }
             }
         });
