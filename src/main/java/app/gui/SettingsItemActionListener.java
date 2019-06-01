@@ -29,14 +29,16 @@ public class SettingsItemActionListener implements ActionListener {
 
     /**
      * Create listener for settings menu item.
+     * 
      * @param programFrame main frame of the program graphic interface.
      */
     public SettingsItemActionListener(JFrame programFrame) {
         this.programFrame = programFrame;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
+
         // show confirm dialog, which allows user to change settings. On ok save
         // settings file.
         // language label + comboBox
@@ -48,8 +50,13 @@ public class SettingsItemActionListener implements ActionListener {
         // encoding label + comboBox
         final JComboBox<Object> encodingBox = new JComboBox<>(Charset.availableCharsets().keySet().toArray());
         // font label + comboBox
-        final JComboBox<Object> fontBox = new JComboBox<>(
-                new File(Settings.workingDirectoryPath.concat("fonts")).list());
+        String[] fontList;
+        try {
+            fontList = new File(Settings.workingDirectoryPath.concat("fonts")).list();
+        } catch (Exception exception) {
+            fontList = new String[0];
+        }
+        final JComboBox<String> fontBox = new JComboBox<>(fontList);
         // reverse title checkbox
         final JCheckBox titleAtTheEndCheckBox = new JCheckBox(programStrings.settings_title_at_the_end);
 
@@ -63,10 +70,10 @@ public class SettingsItemActionListener implements ActionListener {
 
         // container
         final JComponent[] components = new JComponent[] { new JLabel(programStrings.settings_note),
-                new JLabel(programStrings.settings_language), languageBox, new JLabel(programStrings.settings_format), bookTypeBox,
-                new JLabel(programStrings.settings_html_element), htmlElementBox,
-                new JLabel(programStrings.settings_website_encoding), encodingBox, new JLabel(programStrings.settings_pdf_font),
-                fontBox, titleAtTheEndCheckBox };
+                new JLabel(programStrings.settings_language), languageBox, new JLabel(programStrings.settings_format),
+                bookTypeBox, new JLabel(programStrings.settings_html_element), htmlElementBox,
+                new JLabel(programStrings.settings_website_encoding), encodingBox,
+                new JLabel(programStrings.settings_pdf_font), fontBox, titleAtTheEndCheckBox };
 
         if (JOptionPane.showConfirmDialog(programFrame, components, programStrings.menu_program_settings_item,
                 JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
