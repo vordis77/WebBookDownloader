@@ -38,51 +38,44 @@ public class SettingsItemActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        // show confirm dialog, which allows user to change settings. On ok save
-        // settings file.
-        // language label + comboBox
-        final JComboBox<String> languageBox = new JComboBox<>(new String[] { "english", "polski" });
-        // book type
-        final JComboBox<String> bookTypeBox = new JComboBox<>(new String[] { "TXT", "EPUB", "PDF" });
-        // paragraph element
-        final JComboBox<String> htmlElementBox = new JComboBox<>(new String[] { "<p", "<a", "<br", "<span", });
-        // encoding label + comboBox
-        final JComboBox<Object> encodingBox = new JComboBox<>(Charset.availableCharsets().keySet().toArray());
-        // font label + comboBox
         String[] fontList;
         try {
             fontList = new File(Settings.workingDirectoryPath.concat("fonts")).list();
         } catch (Exception exception) {
             fontList = new String[0];
         }
-        final JComboBox<String> fontBox = new JComboBox<>(fontList);
+        final ChoiceSetting languageSetting = new ChoiceSetting(new String[] { "english", "polski" },
+                "programLanguage"),
+                bookTypeSetting = new ChoiceSetting(new String[] { "TXT", "EPUB", "PDF" }, "bookType"),
+                htmlElementSetting = new ChoiceSetting(new String[] { "<p", "<a", "<br", "<span" }, "htmlElement"),
+                encodingSetting = new ChoiceSetting(Charset.availableCharsets().keySet().toArray(new String[0]),
+                        "encoding"),
+                fontSetting = new ChoiceSetting(fontList, "font");
+
+        // show confirm dialog, which allows user to change settings. On ok save
+        // settings file.
         // reverse title checkbox
         final JCheckBox titleAtTheEndCheckBox = new JCheckBox(programStrings.settings_title_at_the_end);
 
         // select current values from global settings
-        languageBox.setSelectedIndex(Settings.programLanguage);
-        bookTypeBox.setSelectedIndex(Settings.fileType);
-        htmlElementBox.setSelectedItem(Settings.chapterParagraphContainer);
-        encodingBox.setSelectedItem(Settings.encoding);
-        fontBox.setSelectedItem(Settings.pdfFontFile);
         titleAtTheEndCheckBox.setSelected(Settings.titleAtTheEnd);
 
         // container
         final JComponent[] components = new JComponent[] { new JLabel(programStrings.settings_note),
-                new JLabel(programStrings.settings_language), languageBox, new JLabel(programStrings.settings_format),
-                bookTypeBox, new JLabel(programStrings.settings_html_element), htmlElementBox,
-                new JLabel(programStrings.settings_website_encoding), encodingBox,
-                new JLabel(programStrings.settings_pdf_font), fontBox, titleAtTheEndCheckBox };
+                new JLabel(programStrings.settings_language), languageSetting.createComponent(),
+                new JLabel(programStrings.settings_format), bookTypeSetting.createComponent(),
+                new JLabel(programStrings.settings_html_element), htmlElementSetting.createComponent(),
+                new JLabel(programStrings.settings_website_encoding), encodingSetting.createComponent(),
+                new JLabel(programStrings.settings_pdf_font), fontSetting.createComponent(), titleAtTheEndCheckBox };
 
         if (JOptionPane.showConfirmDialog(programFrame, components, programStrings.menu_program_settings_item,
                 JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             // user confirmed choices - update global variables and settings file
-            Settings.programLanguage = languageBox.getSelectedIndex();
-            Settings.fileType = bookTypeBox.getSelectedIndex();
-            Settings.chapterParagraphContainer = htmlElementBox.getSelectedItem().toString();
-            Settings.encoding = encodingBox.getSelectedItem().toString();
-            Settings.pdfFontFile = fontBox.getSelectedItem().toString();
+            languageSetting.updateUnderlyingSetting();
+            bookTypeSetting.updateUnderlyingSetting();
+            htmlElementSetting.updateUnderlyingSetting();
+            encodingSetting.updateUnderlyingSetting();
+            fontSetting.updateUnderlyingSetting();
             Settings.titleAtTheEnd = titleAtTheEndCheckBox.isSelected();
             try {
                 // save to file

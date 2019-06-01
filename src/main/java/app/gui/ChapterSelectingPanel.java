@@ -189,16 +189,16 @@ public class ChapterSelectingPanel extends Panel {
     }
 
     private void askForFileNameAndProceedToBookCreatingPane(ArrayList<Chapter> selectedChapters, String[] linkNames) {
-        // ask for fileName and Path with extension depending on fileType
+        // ask for fileName and Path with extension depending on bookType
         final String extension;
-        switch (Settings.fileType) {
-        case Settings.FILE_EPUB:
+        switch (Settings.bookType) {
+        case Settings.BOOK_EPUB:
             extension = ".epub";
             break;
-        case Settings.FILE_TXT:
+        case Settings.BOOK_TXT:
             extension = ".txt";
             break;
-        case Settings.FILE_PDF:
+        case Settings.BOOK_PDF:
             extension = ".pdf";
             break;
         default:

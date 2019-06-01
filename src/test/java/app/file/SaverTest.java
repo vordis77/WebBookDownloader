@@ -47,8 +47,8 @@ public class SaverTest {
      */
     @Test
     public void testTxtSaver() throws Throwable {
-        // set fileType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
-        Settings.fileType = Settings.FILE_TXT;
+        // set bookType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
+        Settings.bookType = Settings.BOOK_TXT;
         saver.createFile();
         // save all dummy data into file
         for (String[] chapter : DUMMY_CHAPTERS) {
@@ -68,8 +68,8 @@ public class SaverTest {
      */
     @Test
     public void testEpubSaver() throws Throwable {
-        // set fileType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
-        Settings.fileType = Settings.FILE_EPUB;
+        // set bookType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
+        Settings.bookType = Settings.BOOK_EPUB;
         saver.createFile();
         // save all dummy data into file
         for (String[] chapter : DUMMY_CHAPTERS) {
@@ -89,8 +89,8 @@ public class SaverTest {
      */
     @Test
     public void testPDFSaver() throws Throwable {
-        // set fileType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
-        Settings.fileType = Settings.FILE_PDF;
+        // set bookType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
+        Settings.bookType = Settings.BOOK_PDF;
         saver.createFile();
         // save all dummy data into file
         for (String[] chapter : DUMMY_CHAPTERS) {

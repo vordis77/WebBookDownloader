@@ -35,7 +35,7 @@ import resources.strings.Strings;
  * @author marcin
  */
 public final class Settings {
-        public static final int LANGUAGE_ENGLISH = 0, LANGUAGE_POLISH = 1, FILE_TXT = 0, FILE_EPUB = 1, FILE_PDF = 2;
+        public static final int LANGUAGE_ENGLISH = 0, LANGUAGE_POLISH = 1, BOOK_TXT = 0, BOOK_EPUB = 1, BOOK_PDF = 2;
 
         /**
          * This field holds information about which language is used in interface.
@@ -45,7 +45,7 @@ public final class Settings {
                         /**
                          * Type of book: ebook, txt, pdf.
                          */
-                        fileType = FILE_TXT;
+                        bookType = BOOK_TXT;
 
         /**
          * Path where program files will be saved.

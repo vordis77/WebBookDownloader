@@ -103,7 +103,7 @@ public class WebBookDownloader {
                 // language
                 Settings.programLanguage = scan.nextInt();
                 // book type
-                Settings.fileType = scan.nextInt();
+                Settings.bookType = scan.nextInt();
                 // html element
                 Settings.chapterParagraphContainer = scan.next();
                 // get encoding, check if they are supported
@@ -123,7 +123,7 @@ public class WebBookDownloader {
 
     public static void saveSettings() throws IOException {
         try (FileWriter fw = new FileWriter(Settings.workingDirectoryPath.concat("settings.data"))) {
-            fw.append(Settings.programLanguage + "\n" + Settings.fileType + "\n" + Settings.chapterParagraphContainer
+            fw.append(Settings.programLanguage + "\n" + Settings.bookType + "\n" + Settings.chapterParagraphContainer
                     + "\n" + Settings.encoding + "\n" + Settings.pdfFontFile + '\n' + Settings.titleAtTheEnd);
             fw.flush();
         } catch (Exception e) {
