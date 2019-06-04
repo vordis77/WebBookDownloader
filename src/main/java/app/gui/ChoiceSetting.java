@@ -1,57 +1,46 @@
 package app.gui;
 
-import java.lang.reflect.Field;
-
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
-import resources.Settings;
+import app.Settings.FieldDefinition;
 
 /**
- * Choice setting object.
+ * ChoiceSetting
  */
-public class ChoiceSetting {
+public class ChoiceSetting extends Setting<JComboBox<String>> {
+    private JLabel label;
 
-    private final String[] options;
-    private final String name;
-    private JComboBox<String> component;
+    public ChoiceSetting(FieldDefinition fieldDefinition, String labelText) {
+        super(fieldDefinition, labelText);
+    }
 
-    public ChoiceSetting(String[] options, String name) {
-        this.options = options;
-        this.name = name;
+    @Override
+    protected JComboBox<String> instantiateComponent() {
+        this.label = new JLabel(super.labelText);
+        return new JComboBox<>(super.fieldDefinition.getChoices());
+    }
+
+    @Override
+    protected void setDefaultValue(JComboBox<String> component, Object value) {
+        component.setSelectedItem((String) value);
+    }
+
+    @Override
+    protected void setDefaultValueOnException(JComboBox<String> component) {
+        component.setSelectedIndex(0); // TODO: {Vordis 2019-06-03 20:30:18} possible that it's unnecessary
+    }
+
+    @Override
+    protected Object getValue(JComboBox<String> component) {
+        return component.getSelectedItem();
     }
 
     /**
-     * Create gui component for this setting.
-     * 
-     * @return gui component.
+     * @return the label
      */
-    public JComboBox<String> createComponent() {
-        this.component = new JComboBox<String>(this.options);
-        // dynamically load setting value and select it
-        try { 
-            Field field = Settings.class.getField(this.name);
-            Integer value = (Integer)field.get(null);
-            component.setSelectedIndex(value);
-        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-            component.setSelectedIndex(0); // set first item on error.
-        }
-
-        return this.component;
+    public JLabel getLabel() {
+        return label;
     }
-
-    /**
-     * Update setting value, based on value in component.
-     * @return true on successful update. (False is possible only on bad configuration - invalid name of field etc.)
-     */
-    public boolean updateUnderlyingSetting() {
-        try { 
-            Field field = Settings.class.getField(this.name);
-            field.set(null, component.getSelectedIndex());
-            return true;
-        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-            return false;
-        }
-    }
-    
 
 }
