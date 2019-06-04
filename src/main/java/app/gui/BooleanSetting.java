@@ -9,13 +9,13 @@ import app.Settings.FieldDefinition;
  */
 public class BooleanSetting extends Setting<JCheckBox> {
 
-    public BooleanSetting(FieldDefinition fieldDefinition, String labelText) {
-        super(fieldDefinition, labelText);
+    public BooleanSetting(FieldDefinition fieldDefinition) {
+        super(fieldDefinition, false);
     }
 
     @Override
     protected JCheckBox instantiateComponent() {
-        return new JCheckBox(super.labelText);
+        return new JCheckBox(super.fieldDefinition.getLabel());
     }
 
     @Override

@@ -3,6 +3,8 @@ package app;
 import java.nio.charset.Charset;
 import java.io.File;
 
+import static app.WebBookDownloader.programStrings;
+
 /**
  * Settings
  */
@@ -30,12 +32,15 @@ public class Settings {
         // reflection or generated based on const name (but const would have to match
         // static field name). Also it's fine as it is, since we have to define those
         // consts either way.
-        LANGUAGE(Type.CHOICES, "programLanguage", new String[] { "english", "polski" }),
-        BOOK_TYPE(Type.CHOICES, "bookType", new String[] { "TXT", "EPUB", "PDF" }),
-        ENCODING(Type.CHOICES, "encoding", Charset.availableCharsets().keySet().toArray(new String[0])),
-        FONT(Type.CHOICES, "pdfFontFile", getFontList()),
-        HTML_ELEMENT(Type.CHOICES, "chapterParagraphContainer", new String[] { "<p", "<a", "<br", "<span" }),
-        TITLE_AT_THE_END(Type.BOOLEAN, "titleAtTheEnd");
+        LANGUAGE(Type.CHOICES, "programLanguage", programStrings.settings_language,
+                new String[] { "english", "polski" }),
+        BOOK_TYPE(Type.CHOICES, "bookType", programStrings.settings_format, new String[] { "TXT", "EPUB", "PDF" }),
+        ENCODING(Type.CHOICES, "encoding", programStrings.settings_website_encoding,
+                Charset.availableCharsets().keySet().toArray(new String[0])),
+        FONT(Type.CHOICES, "pdfFontFile", programStrings.settings_pdf_font, getFontList()),
+        HTML_ELEMENT(Type.CHOICES, "chapterParagraphContainer", programStrings.settings_html_element,
+                new String[] { "<p", "<a", "<br", "<span" }),
+        TITLE_AT_THE_END(Type.BOOLEAN, "titleAtTheEnd", programStrings.settings_title_at_the_end);
 
         private static String[] getFontList() {
             String[] fontList;
@@ -50,16 +55,19 @@ public class Settings {
         private final Type type;
         private final String name;
         private final String[] choices;
+        private final String label;
 
-        private FieldDefinition(Type type, String name, String[] choices) {
+        private FieldDefinition(Type type, String name, String label, String[] choices) {
             this.type = type;
             this.name = name;
+            this.label = label;
             this.choices = choices;
         }
 
-        private FieldDefinition(Type type, String name) {
+        private FieldDefinition(Type type, String name, String label) {
             this.type = type;
             this.name = name;
+            this.label = label;
             this.choices = null;
         }
 
@@ -75,6 +83,13 @@ public class Settings {
          */
         public String getName() {
             return name;
+        }
+
+        /**
+         * @return the label
+         */
+        public String getLabel() {
+            return label;
         }
 
         /**

@@ -3,6 +3,7 @@ package app.gui;
 import java.lang.reflect.Field;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 import app.Settings;
 import app.Settings.FieldDefinition;
@@ -14,11 +15,12 @@ public abstract class Setting<Component extends JComponent> {
 
     protected FieldDefinition fieldDefinition;
     private Component component;
-    protected final String labelText;
+    private JLabel label;
+    private final Boolean usesLabel;
 
-    public Setting(FieldDefinition fieldDefinition, String labelText) {
+    public Setting(FieldDefinition fieldDefinition, Boolean usesLabel) {
         this.fieldDefinition = fieldDefinition;
-        this.labelText = labelText;
+        this.usesLabel = usesLabel;
     }
 
     protected abstract Component instantiateComponent();
@@ -62,6 +64,25 @@ public abstract class Setting<Component extends JComponent> {
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
             return false;
         }
+    }
+
+    /**
+     * @return the usesLabel
+     */
+    public Boolean usesLabel() {
+        return usesLabel;
+    }
+
+    /**
+     * Create new or return existing label.
+     * @return the label
+     */
+    public JLabel getLabel() {
+        if (this.label != null) {
+            return this.label;
+        }
+        
+        return this.label = new JLabel(this.fieldDefinition.getLabel());
     }
 
 }

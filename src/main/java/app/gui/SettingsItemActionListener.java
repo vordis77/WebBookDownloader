@@ -2,22 +2,22 @@ package app.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import app.WebBookDownloader;
-import resources.Settings;
-import static resources.Settings.programStrings;
+import app.Settings.FieldDefinition;
+
+import static app.WebBookDownloader.programStrings;
 
 /**
  * SettingsItemAction
@@ -38,45 +38,46 @@ public class SettingsItemActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String[] fontList;
-        try {
-            fontList = new File(Settings.workingDirectoryPath.concat("fonts")).list();
-        } catch (Exception exception) {
-            fontList = new String[0];
+        final ArrayList<JComponent> components = new ArrayList<>();
+        // first attach note
+        components.add(new JLabel(programStrings.settings_note));
+        // create gui setting object based on settings definitions.
+        // also add them to components (holder)
+        final ArrayList<Setting<?>> settings = new ArrayList<>();
+        Setting<?> setting;
+        Class<?> settingClass;
+        for (FieldDefinition fieldDefinition : FieldDefinition.values()) {
+            settingClass = null; // NOTE: there should be 0 possibility that null values stay after switch
+            switch (fieldDefinition.getType()) {
+            case CHOICES:
+                settingClass = ChoiceSetting.class;
+                break;
+            case BOOLEAN:
+                settingClass = BooleanSetting.class;
+                break;
+            }
+
+            try {
+                setting = (Setting<?>) settingClass.getConstructor(FieldDefinition.class).newInstance(fieldDefinition);
+                settings.add(setting);
+                if (setting.usesLabel()) { // add label if setting uses it.
+                    components.add(((ChoiceSetting) setting).getLabel());
+                }
+                components.add(setting.createComponent()); // add component
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException exception) {
+                LOGGER.log(Level.SEVERE, "Failed to create settings components", exception);
+            }
         }
-        final ChoiceSetting languageSetting = new ChoiceSetting(new String[] { "english", "polski" },
-                "programLanguage"),
-                bookTypeSetting = new ChoiceSetting(new String[] { "TXT", "EPUB", "PDF" }, "bookType"),
-                htmlElementSetting = new ChoiceSetting(new String[] { "<p", "<a", "<br", "<span" }, "htmlElement"),
-                encodingSetting = new ChoiceSetting(Charset.availableCharsets().keySet().toArray(new String[0]),
-                        "encoding"),
-                fontSetting = new ChoiceSetting(fontList, "font");
 
-        // show confirm dialog, which allows user to change settings. On ok save
-        // settings file.
-        // reverse title checkbox
-        final JCheckBox titleAtTheEndCheckBox = new JCheckBox(programStrings.settings_title_at_the_end);
-
-        // select current values from global settings
-        titleAtTheEndCheckBox.setSelected(Settings.titleAtTheEnd);
-
-        // container
-        final JComponent[] components = new JComponent[] { new JLabel(programStrings.settings_note),
-                new JLabel(programStrings.settings_language), languageSetting.createComponent(),
-                new JLabel(programStrings.settings_format), bookTypeSetting.createComponent(),
-                new JLabel(programStrings.settings_html_element), htmlElementSetting.createComponent(),
-                new JLabel(programStrings.settings_website_encoding), encodingSetting.createComponent(),
-                new JLabel(programStrings.settings_pdf_font), fontSetting.createComponent(), titleAtTheEndCheckBox };
-
-        if (JOptionPane.showConfirmDialog(programFrame, components, programStrings.menu_program_settings_item,
+        if (JOptionPane.showConfirmDialog(programFrame, components.toArray(), programStrings.menu_program_settings_item,
                 JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             // user confirmed choices - update global variables and settings file
-            languageSetting.updateUnderlyingSetting();
-            bookTypeSetting.updateUnderlyingSetting();
-            htmlElementSetting.updateUnderlyingSetting();
-            encodingSetting.updateUnderlyingSetting();
-            fontSetting.updateUnderlyingSetting();
-            Settings.titleAtTheEnd = titleAtTheEndCheckBox.isSelected();
+            Iterator<Setting<?>> settingsIterator = settings.iterator();
+            while (settingsIterator.hasNext()) {
+                settingsIterator.next().updateUnderlyingSetting();
+            }
+
             try {
                 // save to file
                 WebBookDownloader.saveSettings();
