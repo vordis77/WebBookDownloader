@@ -2,6 +2,9 @@ package app;
 
 import java.nio.charset.Charset;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static app.WebBookDownloader.programStrings;
 
@@ -28,19 +31,16 @@ public class Settings {
      * Setting field definition.
      */
     public enum FieldDefinition {
-        // TODO: {Vordis 2019-06-03 19:54:51} names could be read dynamically via
-        // reflection or generated based on const name (but const would have to match
-        // static field name). Also it's fine as it is, since we have to define those
-        // consts either way.
-        LANGUAGE(Type.CHOICES, "programLanguage", programStrings.settings_language,
+        LANGUAGE(Type.CHOICES, 0, programStrings.settings_language,
                 new String[] { "english", "polski" }),
-        BOOK_TYPE(Type.CHOICES, "bookType", programStrings.settings_format, new String[] { "TXT", "EPUB", "PDF" }),
-        ENCODING(Type.CHOICES, "encoding", programStrings.settings_website_encoding,
+        BOOK_TYPE(Type.CHOICES, 1, programStrings.settings_format,
+                new String[] { "TXT", "EPUB", "PDF" }),
+        ENCODING(Type.CHOICES, 2, programStrings.settings_website_encoding,
                 Charset.availableCharsets().keySet().toArray(new String[0])),
-        FONT(Type.CHOICES, "pdfFontFile", programStrings.settings_pdf_font, getFontList()),
-        HTML_ELEMENT(Type.CHOICES, "chapterParagraphContainer", programStrings.settings_html_element,
+        FONT(Type.CHOICES, 3, programStrings.settings_pdf_font, getFontList()),
+        HTML_ELEMENT(Type.CHOICES, 4, programStrings.settings_html_element,
                 new String[] { "<p", "<a", "<br", "<span" }),
-        TITLE_AT_THE_END(Type.BOOLEAN, "titleAtTheEnd", programStrings.settings_title_at_the_end);
+        TITLE_AT_THE_END(Type.BOOLEAN, 5, programStrings.settings_title_at_the_end);
 
         private static String[] getFontList() {
             String[] fontList;
@@ -52,23 +52,37 @@ public class Settings {
             return fontList;
         }
 
+        /**
+         * Fields cache.
+         */
+        private static Field[] fieldNames = null;
+
+        /**
+         * Get all setting fields via reflection. Note: function is cached.
+         * 
+         * @return
+         */
+        private static Field[] getFields() {
+            if (fieldNames != null) { // cached result
+                return fieldNames;
+            }
+            return Fields.class.getFields();
+        }
+
         private final Type type;
         private final String name;
         private final String[] choices;
         private final String label;
 
-        private FieldDefinition(Type type, String name, String label, String[] choices) {
+        private FieldDefinition(Type type, int index, String label, String[] choices) {
             this.type = type;
-            this.name = name;
+            this.name = getFields()[index].getName();
             this.label = label;
             this.choices = choices;
         }
 
-        private FieldDefinition(Type type, String name, String label) {
-            this.type = type;
-            this.name = name;
-            this.label = label;
-            this.choices = null;
+        private FieldDefinition(Type type, int index, String label) {
+            this(type, index, label, null);
         }
 
         /**
@@ -105,6 +119,60 @@ public class Settings {
     }
 
     /**
+     * Set field via reflection.
+     * 
+     * @param name
+     * @param value
+     * @return false if unable to set.
+     */
+    public static boolean setFieldValue(String name, Object value) {
+        Field field = null;
+        try {
+            field = Settings.Fields.class.getField(name);
+            field.set(null, value);
+            return true;
+        } catch (NoSuchFieldException | SecurityException | IllegalAccessException exception) {
+            return false;
+        } catch (IllegalArgumentException exception) { // parameter different than string 
+            try { // try to set it via valueOf method of it's type.
+                Method valueOf = field.getType().getDeclaredMethod("valueOf", String.class);
+                field.set(null, valueOf.invoke(null, value));
+                return true;
+            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | IllegalAccessException
+                    | InvocationTargetException e) {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Get field value via reflection.
+     * 
+     * @param name
+     * @param defaultValue default value, which will be returned on error.
+     * @return
+     */
+    public static Object getFieldValue(String name, Object defaultValue) {
+        try {
+            Field field = Settings.Fields.class.getField(name);
+            return field.get(null);
+        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 
+     * Get field value via reflection.
+     * 
+     * @param name
+     * @return value or null if unable to get.
+     */
+    public static Object getFieldValue(String name) {
+        return Settings.getFieldValue(name, null);
+    }
+
+    /**
      * Settings fields.
      */
     public static class Fields {
@@ -138,7 +206,7 @@ public class Settings {
         /**
          * True if title should be set at the of the chapter.
          */
-        public static boolean titleAtTheEnd = false;
+        public static Boolean titleAtTheEnd = false;
     }
 
 }
