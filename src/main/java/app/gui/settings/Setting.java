@@ -1,12 +1,10 @@
-package app.gui;
-
-import java.lang.reflect.Field;
+package app.gui.settings;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import app.Settings;
-import app.Settings.FieldDefinition;
+import app.settings.Settings;
+import app.settings.Settings.FieldDefinition;
 
 /**
  * Setting object - archetype.
@@ -27,8 +25,6 @@ public abstract class Setting<Component extends JComponent> {
 
     protected abstract void setDefaultValue(Component component, Object value);
 
-    protected abstract void setDefaultValueOnException(Component component);
-
     protected abstract Object getValue(Component component);
 
     /**
@@ -39,12 +35,11 @@ public abstract class Setting<Component extends JComponent> {
     public Component createComponent() {
         this.component = instantiateComponent();
         // dynamically load setting value and select it
-        try {
-            Field field = Settings.Fields.class.getField(this.fieldDefinition.getName());
-            Object value = field.get(null);
-            setDefaultValue(component, value);
-        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-            setDefaultValueOnException(component);
+        Object fieldValue = Settings.getFieldValue(this.fieldDefinition.getName());
+        if (fieldValue != null) { // TODO: {Vordis 2019-06-05 20:00:42} we can react differently
+            // I assume that this should hold true always
+            // unless provided names are invalid, which shouldn't occur
+            setDefaultValue(component, fieldValue);
         }
 
         return this.component;
@@ -57,13 +52,7 @@ public abstract class Setting<Component extends JComponent> {
      *         configuration - invalid name of field etc.)
      */
     public boolean updateUnderlyingSetting() {
-        try {
-            Field field = Settings.Fields.class.getField(this.fieldDefinition.getName());
-            field.set(null, getValue(component));
-            return true;
-        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-            return false;
-        }
+        return Settings.setFieldValue(this.fieldDefinition.getName(), getValue(component));
     }
 
     /**
@@ -75,13 +64,14 @@ public abstract class Setting<Component extends JComponent> {
 
     /**
      * Create new or return existing label.
+     * 
      * @return the label
      */
     public JLabel getLabel() {
         if (this.label != null) {
             return this.label;
         }
-        
+
         return this.label = new JLabel(this.fieldDefinition.getLabel());
     }
 

@@ -47,12 +47,12 @@ import app.gui.components.Button;
 import app.gui.components.Label;
 import app.gui.components.Panel;
 import app.gui.components.TextField;
+import app.settings.Settings.Fields;
 import resources.Dimensions;
-import resources.Settings;
-import resources.strings.Strings;
 import app.web.Chapter;
 import app.web.LinksRetriever;
 import app.WebBookDownloader;
+import static app.WebBookDownloader.programStrings;
 
 /**
  * This panel allows user to choose range of chapters to create book.
@@ -63,11 +63,9 @@ public class ChapterSelectingPanel extends Panel {
 
     private static final long serialVersionUID = -5679451016067185376L;
     private final LinksRetriever wlr;
-    private final Strings strings;
 
     public ChapterSelectingPanel() {
         this.wlr = new LinksRetriever();
-        strings = Settings.programStrings;
     }
 
     @Override
@@ -77,21 +75,21 @@ public class ChapterSelectingPanel extends Panel {
         final TextField indexAddressText = new TextField(), rangeStartAddressText = new TextField(),
                 rangeEndAddressText = new TextField(), startAddressText = new TextField(),
                 numberOfChaptersText = new TextField(), nextChapterLinkNameText = new TextField("Next Chapter");
-        tabbedPane.addTab(strings.range_choosing_tab1, createHorizontallyCenteredComponent(
-                new JComponent[] { new Label(strings.range_choosing_index_address), indexAddressText }));
-        tabbedPane.addTab(strings.range_choosing_tab2, createVerticallyCenteredComponent(new JComponent[] {
+        tabbedPane.addTab(programStrings.range_choosing_tab1, createHorizontallyCenteredComponent(
+                new JComponent[] { new Label(programStrings.range_choosing_index_address), indexAddressText }));
+        tabbedPane.addTab(programStrings.range_choosing_tab2, createVerticallyCenteredComponent(new JComponent[] {
                 createHorizontallyCenteredComponent(
-                        new JComponent[] { new Label(strings.range_choosing_address_start), rangeStartAddressText }),
+                        new JComponent[] { new Label(programStrings.range_choosing_address_start), rangeStartAddressText }),
                 createHorizontallyCenteredComponent(
-                        new JComponent[] { new Label(strings.range_choosing_address_end), rangeEndAddressText }), }));
-        tabbedPane.addTab(strings.range_choosing_tab3, createVerticallyCenteredComponent(new JComponent[] {
+                        new JComponent[] { new Label(programStrings.range_choosing_address_end), rangeEndAddressText }), }));
+        tabbedPane.addTab(programStrings.range_choosing_tab3, createVerticallyCenteredComponent(new JComponent[] {
                 createHorizontallyCenteredComponent(
-                        new JComponent[] { new Label(strings.range_choosing_address_start), startAddressText }),
+                        new JComponent[] { new Label(programStrings.range_choosing_address_start), startAddressText }),
                 createHorizontallyCenteredComponent(new JComponent[] {
-                        new Label(strings.range_choosing_number_of_chapters), numberOfChaptersText }),
+                        new Label(programStrings.range_choosing_number_of_chapters), numberOfChaptersText }),
                 createHorizontallyCenteredComponent(new JComponent[] {
-                        new Label(strings.range_choosing_next_chapter_link_name), nextChapterLinkNameText }), }));
-        final Button confirmButton = new Button(strings.range_choosing_confirm_button);
+                        new Label(programStrings.range_choosing_next_chapter_link_name), nextChapterLinkNameText }), }));
+        final Button confirmButton = new Button(programStrings.range_choosing_confirm_button);
         // listeners
         confirmButton.addActionListener((ActionEvent e) -> {
             if (tabbedPane.getSelectedIndex() == 2) { // if crawling go straight to next panel
@@ -121,11 +119,11 @@ public class ChapterSelectingPanel extends Panel {
                                 return wlr.getChaptersFromTOC(indexAddressText.getText());
                             } catch (IOException ex) {
                                 if (ex instanceof MalformedURLException) { // bad url error
-                                    WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
-                                            strings.dialog_invalid_address_message + "\n" + ex.getMessage());
+                                    WebBookDownloader.gui.showInformationDialog(programStrings.errorDialogTitle,
+                                            programStrings.dialog_invalid_address_message + "\n" + ex.getMessage());
                                 } else { // io error
-                                    WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
-                                            strings.dialog_io_error_message + "\n" + ex.getMessage());
+                                    WebBookDownloader.gui.showInformationDialog(programStrings.errorDialogTitle,
+                                            programStrings.dialog_io_error_message + "\n" + ex.getMessage());
                                 }
                                 return null;
                             }
@@ -171,14 +169,14 @@ public class ChapterSelectingPanel extends Panel {
         listContainer.setPreferredSize(new Dimension(Dimensions.FRAME_WIDTH, Dimensions.FRAME_HEIGHT));
         // show list in dialog
         if (JOptionPane.showConfirmDialog(WebBookDownloader.gui.getProgramFrame(), listContainer,
-                strings.dialog_chapter_selection_title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                programStrings.dialog_chapter_selection_title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             // user confirmed - get selected chapters and open chapter crawlingPanel with
             // them
             final ArrayList<Chapter> selectedChapters = new ArrayList<Chapter>(chapterList.getSelectedValuesList());
             // check if user selected chapters
             if (selectedChapters.isEmpty()) {
-                WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
-                        strings.dialog_no_chapter_selected_message);
+                WebBookDownloader.gui.showInformationDialog(programStrings.errorDialogTitle,
+                        programStrings.dialog_no_chapter_selected_message);
                 return;
             }
 
@@ -191,21 +189,21 @@ public class ChapterSelectingPanel extends Panel {
     private void askForFileNameAndProceedToBookCreatingPane(ArrayList<Chapter> selectedChapters, String[] linkNames) {
         // ask for fileName and Path with extension depending on bookType
         final String extension;
-        switch (Settings.bookType) {
-        case Settings.BOOK_EPUB:
+        switch (Fields.bookType) {
+        case EPUB:
             extension = ".epub";
             break;
-        case Settings.BOOK_TXT:
+        case TXT:
             extension = ".txt";
             break;
-        case Settings.BOOK_PDF:
+        case PDF:
             extension = ".pdf";
             break;
         default:
             extension = ".txt";
             break;
         }
-        final FileDialog fd = new FileDialog(WebBookDownloader.gui.getProgramFrame(), strings.dialog_file_create,
+        final FileDialog fd = new FileDialog(WebBookDownloader.gui.getProgramFrame(), programStrings.dialog_file_create,
                 FileDialog.SAVE);
         fd.setFilenameFilter((File dir, String name) -> {
             return new File(dir.getAbsolutePath().concat(File.separator).concat(name)).isDirectory()

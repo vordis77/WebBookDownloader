@@ -45,16 +45,15 @@ import javax.swing.JList;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
-import resources.Settings;
-import resources.strings.Strings;
 import app.file.Saver;
 import app.gui.components.Button;
 import app.gui.components.Label;
 import app.gui.components.Panel;
+import app.settings.Settings;
 import app.web.Chapter;
 import app.web.ChapterRetriever;
 import app.WebBookDownloader;
-
+import static app.WebBookDownloader.programStrings;
 /**
  * This class is responsible for panel in which user can see progress of
  * creating book, can cancel it or (after operation ended) go back to
@@ -67,7 +66,6 @@ public class BookCreatingPanel extends Panel {
     private static final long serialVersionUID = -4681243607663660435L;
     private final ArrayList<Chapter> chapters;
     private final String fileName;
-    private final Strings strings;
     private final ChapterSelectingPanel parentPanel;
     private boolean taskCancelled = false;
     private final String[] crawlingValues;
@@ -89,7 +87,6 @@ public class BookCreatingPanel extends Panel {
             String[] crawlingValues) {
         this.chapters = chapters;
         this.fileName = fileName;
-        this.strings = Settings.programStrings;
         this.parentPanel = parentPanel;
         this.crawlingValues = crawlingValues;
     }
@@ -97,15 +94,15 @@ public class BookCreatingPanel extends Panel {
     @Override
     public void initializePanel() throws Exception {
         // first of all try to create file, if failure back to parent panel
-        final Saver fs = new Saver(fileName, Settings.encoding);
+        final Saver fs = new Saver(fileName, Settings.Fields.encoding);
         try {
             fs.createFile();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) { // it should not occur with fileDialog but
                                                                             // who knows.
             // inform user, throw exception so this panel will not be shown and rest
             // operations will not be done.
-            WebBookDownloader.gui.showInformationDialog(strings.errorDialogTitle,
-                    strings.dialog_invalid_filename_message);
+            WebBookDownloader.gui.showInformationDialog(programStrings.errorDialogTitle,
+                    programStrings.dialog_invalid_filename_message);
             throw ex;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Undefined failure in file creation.", ex);
@@ -117,11 +114,11 @@ public class BookCreatingPanel extends Panel {
         // chapters in crawling
 
         // components
-        final Label chaptersSuccessTextLabel = new Label(strings.book_creating_chapters_success),
+        final Label chaptersSuccessTextLabel = new Label(programStrings.book_creating_chapters_success),
                 chaptersSuccessValueLabel = new Label("0"),
-                chaptersFailureTextLabel = new Label(strings.book_creating_chapters_failure),
+                chaptersFailureTextLabel = new Label(programStrings.book_creating_chapters_failure),
                 chaptersFailureValueLabel = new Label("0"),
-                chaptersTotalTextLabel = new Label(strings.book_creating_chapters_total),
+                chaptersTotalTextLabel = new Label(programStrings.book_creating_chapters_total),
                 chaptersTotalValueLabel = new Label(String.valueOf(numberOfChapters));
         final JProgressBar progressBar = new JProgressBar(0, numberOfChapters);
         // if crawling with unspecified number use ambiguous progress bar
@@ -129,8 +126,8 @@ public class BookCreatingPanel extends Panel {
             progressBar.setIndeterminate(true);
         }
         progressBar.setStringPainted(true);
-        final Button cancelButton = new Button(strings.book_creating_button_cancel),
-                backButton = new Button(strings.book_creating_button_back);
+        final Button cancelButton = new Button(programStrings.book_creating_button_cancel),
+                backButton = new Button(programStrings.book_creating_button_back);
         final JList<Object> progressDetails = new JList<Object>(new DefaultListModel<Object>());
         // cell renderer - set color of font for success and error, based on assumption
         // that chapter name doesn't contain :// character
@@ -181,12 +178,12 @@ public class BookCreatingPanel extends Panel {
                             fs.saveToFile(chapterValues);
                             // if all ok counter of success +1
                             successCounter++;
-                            resultDescription = chapterValues[0] + strings.book_creating_list_success_entry
+                            resultDescription = chapterValues[0] + programStrings.book_creating_list_success_entry
                                     + chapterValues[1].length();
                             bookSizeInCharacters += chapterValues[1].length() + chapterValues[0].length();
                         } catch (Exception e) {
                             failureCounter++;
-                            resultDescription = strings.book_creating_list_failure_entry + wc.getAddress() + " -> "
+                            resultDescription = programStrings.book_creating_list_failure_entry + wc.getAddress() + " -> "
                                     + e.getMessage();
                             LOGGER.log(Level.SEVERE, "Chapter failure.", e);
                         }
@@ -211,19 +208,19 @@ public class BookCreatingPanel extends Panel {
                                 fs.saveToFile(chapterValues);
                                 // if all ok counter of success +1
                                 successCounter++;
-                                resultDescription = chapterValues[0] + strings.book_creating_list_success_entry
+                                resultDescription = chapterValues[0] + programStrings.book_creating_list_success_entry
                                         + chapterValues[1].length();
                                 bookSizeInCharacters += chapterValues[1].length() + chapterValues[0].length();
                             } catch (Throwable ex) { // soft crash - unable to save one of chapters it does not mean
                                                      // that we have to abort operation.
                                 failureCounter++;
-                                resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
+                                resultDescription = programStrings.book_creating_list_failure_entry + nextChapter + " -> "
                                         + ex.getMessage();
                                 LOGGER.log(Level.SEVERE, "Chapter failure.", ex);
                             }
                         } catch (Throwable e) { // hard crash - unable to get values for chapter from web, on crawling
                                                 // it means that we have to abort operation.
-                            resultDescription = strings.book_creating_list_failure_entry + nextChapter + " -> "
+                            resultDescription = programStrings.book_creating_list_failure_entry + nextChapter + " -> "
                                     + e.getMessage();
                             // make sure that loop will break after publishing results
                             chapterValues = new String[] { null, null, null };
@@ -256,8 +253,8 @@ public class BookCreatingPanel extends Panel {
             @Override
             protected void done() {
                 // show finish message and report
-                WebBookDownloader.gui.showInformationDialog(strings.dialog_book_creating_report_title,
-                        strings.dialog_book_creating_report_message + bookSizeInCharacters);
+                WebBookDownloader.gui.showInformationDialog(programStrings.dialog_book_creating_report_title,
+                        programStrings.dialog_book_creating_report_message + bookSizeInCharacters);
                 // disable cancel button, enable back button
                 backButton.setEnabled(true);
                 cancelButton.setEnabled(false);

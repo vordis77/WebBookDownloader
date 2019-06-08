@@ -27,7 +27,8 @@ package app.web;
 
 import java.io.IOException;
 import org.jsoup.Jsoup;
-import resources.Settings;
+
+import app.settings.Settings;
 
 /**
  * This class retrieves chapter text from link.
@@ -64,7 +65,7 @@ public class ChapterRetriever {
         int[] blockBounds = new int[2];
         // go over blocks with paragraphs, get one with the biggest size of text(parse
         // it).
-        while ((chapterTextBlockStartIndex = document.indexOf(Settings.chapterParagraphContainer,
+        while ((chapterTextBlockStartIndex = document.indexOf(Settings.Fields.chapterParagraphContainer,
                 chapterTextBlockEndIndex)) != -1) { // search for paragraphs until there is none left, jump over
                                                     // sub-divs.
             // set tag counter as unended
@@ -94,7 +95,7 @@ public class ChapterRetriever {
             }
             // if chapter paragraph container is <br then we need to use parent index as
             // start
-            if (Settings.chapterParagraphContainer.equals("<br")) {
+            if (Settings.Fields.chapterParagraphContainer.equals("<br")) {
                 chapterTextBlockStartIndex = document.lastIndexOf("<div", chapterTextBlockStartIndex);
             }
             // after loop we should have index of block end

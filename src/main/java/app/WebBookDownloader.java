@@ -25,24 +25,16 @@
  */
 package app;
 
+import static app.settings.Settings.Fields.programLanguage;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.nio.charset.Charset;
-import java.util.Scanner;
 
 import app.gui.ChapterSelectingPanel;
 import app.gui.Interface;
-import resources.Settings;
-import static resources.Settings.LANGUAGE_ENGLISH;
-import static resources.Settings.LANGUAGE_POLISH;
-import static resources.Settings.programLanguage;
-import static resources.Settings.programStrings;
+import app.settings.Reader;
 import resources.strings.EnglishStrings;
 import resources.strings.PolishStrings;
+import resources.strings.Strings;
 
 /**
  * Main class of the program.
@@ -51,7 +43,16 @@ import resources.strings.PolishStrings;
  */
 public class WebBookDownloader {
 
-    private static final Logger LOGGER = Logger.getLogger(WebBookDownloader.class.getName());
+    /**
+     * Instance of strings resources. You can access fields in it for creating
+     * interface.
+     */
+    public static Strings programStrings;
+
+    /**
+     * Path where program files will be saved.
+     */
+    public static final String workingDirectoryPath = System.getProperty("user.dir").concat(File.separator);
 
     /**
      * Use this field to handle basic interaction between user and interface.
@@ -64,24 +65,13 @@ public class WebBookDownloader {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
         // load settings
-        try {
-            loadSettings();
-        } catch (FileNotFoundException e) {
-            LOGGER.log(Level.WARNING, "Settings file not found.", e);
-        }
+        Reader settingsReader = new Reader();
+        settingsReader.loadSettings(); // ignore result, failure is not critical
+        // also it's logged in reader.
 
-        // create corresponding to language Strings instance
-        switch (programLanguage) {
-        case LANGUAGE_POLISH:
-            programStrings = new PolishStrings();
-            break;
-        default:
-        case LANGUAGE_ENGLISH:
-            programStrings = new EnglishStrings();
-            break;
-        }
+        initProgramStrings();
+
         // initialize gui tool
         gui = new Interface();
         // show frame
@@ -91,43 +81,17 @@ public class WebBookDownloader {
     }
 
     /**
-     * This method loads data from settings file into settings global fields, on
-     * assumption that settings file exists and values lays in strict order, divided
-     * by new line.
+     * Init appropriate String instance.
      */
-    private static void loadSettings() throws FileNotFoundException {
-        try (Scanner scan = new Scanner(new File(Settings.workingDirectoryPath.concat("settings.data")))) { // open file
-            scan.useDelimiter("\n");
-            try {
-                String line;
-                // language
-                Settings.programLanguage = scan.nextInt();
-                // book type
-                Settings.bookType = scan.nextInt();
-                // html element
-                Settings.chapterParagraphContainer = scan.next();
-                // get encoding, check if they are supported
-                // encoding
-                line = scan.next();
-                if (Charset.isSupported(line)) {
-                    Settings.encoding = line;
-                }
-                // pdf font name
-                Settings.pdfFontFile = scan.next();
-                Settings.titleAtTheEnd = Boolean.valueOf(scan.next());
-            } catch (Exception e) { // if data invalid do nothing, settings have default values
-                LOGGER.log(Level.SEVERE, "Failed to load settings.", e);
-            }
-        }
-    }
-
-    public static void saveSettings() throws IOException {
-        try (FileWriter fw = new FileWriter(Settings.workingDirectoryPath.concat("settings.data"))) {
-            fw.append(Settings.programLanguage + "\n" + Settings.bookType + "\n" + Settings.chapterParagraphContainer
-                    + "\n" + Settings.encoding + "\n" + Settings.pdfFontFile + '\n' + Settings.titleAtTheEnd);
-            fw.flush();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to save settings.", e);
+    private static void initProgramStrings() {
+        switch (programLanguage) {
+        case POLISH:
+            WebBookDownloader.programStrings = new PolishStrings();
+            break;
+        default:
+        case ENGLISH:
+            WebBookDownloader.programStrings = new EnglishStrings();
+            break;
         }
     }
 

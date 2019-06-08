@@ -1,6 +1,9 @@
-package app;
+package app.settings;
 
 import java.nio.charset.Charset;
+
+import app.WebBookDownloader;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

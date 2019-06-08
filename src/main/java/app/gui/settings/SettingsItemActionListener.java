@@ -1,8 +1,7 @@
-package app.gui;
+package app.gui.settings;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,8 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import app.WebBookDownloader;
-import app.Settings.FieldDefinition;
+import app.settings.Saver;
+import app.settings.Settings.FieldDefinition;
 
 import static app.WebBookDownloader.programStrings;
 
@@ -55,6 +54,8 @@ public class SettingsItemActionListener implements ActionListener {
             case BOOLEAN:
                 settingClass = BooleanSetting.class;
                 break;
+            case RAW_VALUE:
+                break; // empty only to fix warning
             }
 
             try {
@@ -78,12 +79,9 @@ public class SettingsItemActionListener implements ActionListener {
                 settingsIterator.next().updateUnderlyingSetting();
             }
 
-            try {
-                // save to file
-                WebBookDownloader.saveSettings();
-            } catch (IOException exception) {
-                LOGGER.log(Level.SEVERE, "Failed to save settings", exception);
-            }
+            // save to file
+            final Saver settingsSaver = new Saver();
+            settingsSaver.storeInFile();
         }
     }
 

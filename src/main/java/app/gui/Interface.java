@@ -29,7 +29,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.logging.Logger;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -38,9 +37,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+
+import app.gui.settings.SettingsItemActionListener;
 import resources.Dimensions;
-import resources.Settings;
-import resources.strings.Strings;
+import static app.WebBookDownloader.programStrings;
 
 /**
  * This class handles basic user- interface interactions, it also allows to
@@ -50,16 +50,13 @@ import resources.strings.Strings;
  */
 public class Interface {
 
-    private static final Logger LOGGER = Logger.getLogger(Interface.class.getName());
-
     private final JFrame programFrame;
-    private final Strings strings = Settings.programStrings;
 
     /**
      * Creates instance of graphic user interface, creates frame.
      */
     public Interface() {
-        this.programFrame = new JFrame(strings.programTitle);
+        this.programFrame = new JFrame(programStrings.programTitle);
     }
 
     /**
@@ -75,11 +72,12 @@ public class Interface {
         // menu bar
         final JMenuBar menuBar = new JMenuBar();
         // menus
-        final JMenu programMenu = new JMenu(strings.menu_program_title), helpMenu = new JMenu(strings.menu_help_title);
+        final JMenu programMenu = new JMenu(programStrings.menu_program_title),
+                helpMenu = new JMenu(programStrings.menu_help_title);
         // menu items
-        final JMenuItem closeItem = new JMenuItem(strings.menu_program_close_item),
-                settingsItem = new JMenuItem(strings.menu_program_settings_item),
-                aboutProgramItem = new JMenuItem(strings.menu_help_about_program_item);
+        final JMenuItem closeItem = new JMenuItem(programStrings.menu_program_close_item),
+                settingsItem = new JMenuItem(programStrings.menu_program_settings_item),
+                aboutProgramItem = new JMenuItem(programStrings.menu_help_about_program_item);
         // menu items listeners
         closeItem.addActionListener((ActionEvent e) -> {
             // close program
@@ -88,7 +86,7 @@ public class Interface {
         settingsItem.addActionListener(new SettingsItemActionListener(programFrame));
         aboutProgramItem.addActionListener((ActionEvent e) -> {
             // show dialog with information about program
-            showInformationDialog(strings.menu_help_about_program_item, strings.about_program_message);
+            showInformationDialog(programStrings.menu_help_about_program_item, programStrings.about_program_message);
         });
 
         // add items into menus, menus into menubar, menubar into frame

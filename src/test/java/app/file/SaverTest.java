@@ -2,7 +2,8 @@ package app.file;
 
 import org.junit.Test;
 
-import resources.Settings;
+import app.settings.Settings;
+import app.settings.Settings.Book;
 
 import static org.junit.Assert.*;
 
@@ -48,7 +49,7 @@ public class SaverTest {
     @Test
     public void testTxtSaver() throws Throwable {
         // set bookType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
-        Settings.bookType = Settings.BOOK_TXT;
+        Settings.Fields.bookType = Book.TXT;
         saver.createFile();
         // save all dummy data into file
         for (String[] chapter : DUMMY_CHAPTERS) {
@@ -69,7 +70,7 @@ public class SaverTest {
     @Test
     public void testEpubSaver() throws Throwable {
         // set bookType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
-        Settings.bookType = Settings.BOOK_EPUB;
+        Settings.Fields.bookType = Book.EPUB;
         saver.createFile();
         // save all dummy data into file
         for (String[] chapter : DUMMY_CHAPTERS) {
@@ -90,7 +91,7 @@ public class SaverTest {
     @Test
     public void testPDFSaver() throws Throwable {
         // set bookType in settings // TODO: {Vordis 2019-05-23 21:53:42} this needs to be rewritten, but it's on low priority
-        Settings.bookType = Settings.BOOK_PDF;
+        Settings.Fields.bookType = Book.PDF;
         saver.createFile();
         // save all dummy data into file
         for (String[] chapter : DUMMY_CHAPTERS) {

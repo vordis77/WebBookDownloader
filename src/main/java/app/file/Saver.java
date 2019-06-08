@@ -42,7 +42,10 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import resources.Settings;
+
+import app.WebBookDownloader;
+import app.settings.Settings;
+import app.settings.Settings.Fields;
 
 /**
  * This class allows to save chapters into file, depending on user settings -
@@ -95,15 +98,15 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
      * @throws UnsupportedEncodingException if encoding is invalid.
      */
     public void createFile() throws UnsupportedEncodingException, IOException {
-        switch (Settings.bookType) {
-        case Settings.BOOK_EPUB:
+        switch (Fields.bookType) {
+        case EPUB:
             ebook = new Book();
             // Set the title
             ebook.getMetadata().addTitle(getBookTitle());
             // Add an Author
             ebook.getMetadata().addAuthor(new Author("WebBookDownloader"));
             break;
-        case Settings.BOOK_PDF:
+        case PDF:
             // create document
             document = new PDDocument();
             // Setting the author of the document
@@ -117,7 +120,7 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
             pdfTextWidth *= fontFactor;
             pdfTitleWidth *= fontFactor;
             break;
-        case Settings.BOOK_TXT:
+        case TXT:
             pw = new PrintWriter(filePath, encoding);
             break;
         }
@@ -130,11 +133,11 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
      * @throws IOException exception if saving failed
      */
     public void saveToFile(String[] values) throws IOException {
-        switch (Settings.bookType) {
-        case Settings.BOOK_EPUB:
+        switch (Fields.bookType) {
+        case EPUB:
             ebook.addSection(values[0], new Resource(getEbookChapterValue(values), values[0].concat(".html")));
             break;
-        case Settings.BOOK_PDF:
+        case PDF:
             ppw.createPage(values[0]);
             for (Object object : explodeStringIntoPdfLines(values[1], pdfTextWidth)) {
                 // check if we have free lines on page, if not then add last page and create new
@@ -151,27 +154,27 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
                 ppw.addPageToDocument();
             }
             break;
-        case Settings.BOOK_TXT:
+        case TXT:
             pw.print(values[0] + "\n" + values[1] + "\n");
             break;
         }
     }
 
     public void closeFile() throws IOException {
-        switch (Settings.bookType) {
-        case Settings.BOOK_EPUB:
+        switch (Fields.bookType) {
+        case EPUB:
             // Create EpubWriter
             EpubWriter epubWriter = new EpubWriter();
             // Write the Book as Epub
             epubWriter.write(ebook, new FileOutputStream(filePath));
             break;
-        case Settings.BOOK_PDF:
+        case PDF:
             // save document
             document.save(filePath);
             // close document
             document.close();
             break;
-        case Settings.BOOK_TXT:
+        case TXT:
             pw.flush(); // flush to be sure that everything was saved.
             pw.close();
             pw = null;
@@ -201,7 +204,7 @@ public class Saver { // TODO: {Vordis 2019-05-18 17:33:00} reshape into concrete
         public PDFPageWriter(PDDocument document) throws IOException {
             this.document = document;
             font = PDType0Font.load(document, new FileInputStream(
-                    Settings.workingDirectoryPath.concat("fonts").concat(File.separator).concat(Settings.pdfFontFile)),
+                    WebBookDownloader.workingDirectoryPath.concat("fonts").concat(File.separator).concat(Fields.pdfFontFile)),
                     true);
 
         }

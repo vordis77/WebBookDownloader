@@ -1,8 +1,8 @@
-package app.gui;
+package app.gui.settings;
 
 import javax.swing.JComboBox;
 
-import app.Settings.FieldDefinition;
+import app.settings.Settings.FieldDefinition;
 
 /**
  * ChoiceSetting
@@ -20,12 +20,7 @@ public class ChoiceSetting extends Setting<JComboBox<String>> {
 
     @Override
     protected void setDefaultValue(JComboBox<String> component, Object value) {
-        component.setSelectedItem((String) value);
-    }
-
-    @Override
-    protected void setDefaultValueOnException(JComboBox<String> component) {
-        component.setSelectedIndex(0); // TODO: {Vordis 2019-06-03 20:30:18} possible that it's unnecessary
+        component.setSelectedItem(value.toString());
     }
 
     @Override
