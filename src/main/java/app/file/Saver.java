@@ -44,7 +44,6 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import app.WebBookDownloader;
-import app.settings.Settings;
 import app.settings.Settings.Fields;
 
 /**

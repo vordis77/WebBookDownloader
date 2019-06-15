@@ -3,6 +3,7 @@ package app.settings;
 import java.nio.charset.Charset;
 
 import app.WebBookDownloader;
+import app.tools.BiHashMap;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -21,6 +22,24 @@ public class Settings {
      */
     public enum Language {
         ENGLISH, POLISH;
+
+        public static Language overriddenValueOf(String value) {
+            return Language.valueOf(constToDisplayMap.getKey(value));
+        }
+
+        private static final BiHashMap<String, String> constToDisplayMap = initializeDisplayValues();
+
+        private static final BiHashMap<String, String> initializeDisplayValues() {
+            BiHashMap<String, String> map = new BiHashMap<>();
+            map.put("ENGLISH", "english");
+            map.put("POLISH", "polski");
+            return map;
+        }
+
+        @Override
+        public String toString() {
+            return constToDisplayMap.get(super.toString());
+        }
     }
 
     /**
@@ -34,10 +53,8 @@ public class Settings {
      * Setting field definition.
      */
     public enum FieldDefinition {
-        LANGUAGE(Type.CHOICES, 0, programStrings.settings_language,
-                new String[] { "english", "polski" }),
-        BOOK_TYPE(Type.CHOICES, 1, programStrings.settings_format,
-                new String[] { "TXT", "EPUB", "PDF" }),
+        LANGUAGE(Type.CHOICES, 0, programStrings.settings_language, new String[] { "english", "polski" }),
+        BOOK_TYPE(Type.CHOICES, 1, programStrings.settings_format, new String[] { "TXT", "EPUB", "PDF" }),
         ENCODING(Type.CHOICES, 2, programStrings.settings_website_encoding,
                 Charset.availableCharsets().keySet().toArray(new String[0])),
         FONT(Type.CHOICES, 3, programStrings.settings_pdf_font, getFontList()),
@@ -46,13 +63,15 @@ public class Settings {
         TITLE_AT_THE_END(Type.BOOLEAN, 5, programStrings.settings_title_at_the_end);
 
         private static String[] getFontList() {
-            String[] fontList;
             try {
-                fontList = new File(WebBookDownloader.workingDirectoryPath.concat("fonts")).list();
-            } catch (Exception exception) {
-                fontList = new String[0];
+                String[] fontList = (new File(WebBookDownloader.workingDirectoryPath.concat("fonts"))).list();
+                if (fontList == null) {
+                    throw new Exception("Fonts not found, make sure there is 'fonts' folder in working directory.");
+                }
+                return fontList;
+            } catch (Throwable throwable) {
+                return new String[0];
             }
-            return fontList;
         }
 
         /**
@@ -136,9 +155,16 @@ public class Settings {
             return true;
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException exception) {
             return false;
-        } catch (IllegalArgumentException exception) { // parameter different than string 
+        } catch (IllegalArgumentException exception) { // parameter different than string
             try { // try to set it via valueOf method of it's type.
-                Method valueOf = field.getType().getDeclaredMethod("valueOf", String.class);
+                String methodName = "valueOf";                
+                switch (field.getType().getSimpleName()) {
+                    case "Language": // TODO: {Vordis 2019-06-15 17:05:01} maybe there is better way
+                        methodName = "overriddenValueOf";
+                        break;
+                }
+
+                Method valueOf = field.getType().getDeclaredMethod(methodName, String.class);
                 field.set(null, valueOf.invoke(null, value));
                 return true;
             } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | IllegalAccessException
